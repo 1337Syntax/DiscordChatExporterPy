@@ -29,19 +29,20 @@
 #                                                                                #
 # Github: https://github.com/glasnt/emojificate                                  #
 ##################################################################################
+import aiohttp
+import emoji
 import unicodedata
 from grapheme import graphemes
-import emoji
-import aiohttp
 
-from chat_exporter.ext.cache import cache
+from typing import List
 
+from chat_exporter.ext import cache
 
 cdn_fmt = "https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/{codepoint}.png"
 
 
 @cache()
-async def valid_src(src):
+async def valid_src(src: str) -> bool:
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(src) as resp:
@@ -50,21 +51,21 @@ async def valid_src(src):
         return False
 
 
-def valid_category(char):
+def valid_category(char: str) -> bool:
     try:
         return unicodedata.category(char) == "So"
     except TypeError:
         return False
 
 
-async def codepoint(codes):
+async def codepoint(codes: List[str]) -> str:
     # See https://github.com/twitter/twemoji/issues/419#issuecomment-637360325
     if "200d" not in codes:
         return "-".join([c for c in codes if c != "fe0f"])
     return "-".join(codes)
 
 
-async def convert(char):
+async def convert(char: str) -> str:
     if valid_category(char):
         name = unicodedata.name(char).title()
     else:
@@ -72,7 +73,9 @@ async def convert(char):
             return char
         else:
             shortcode = emoji.demojize(char)
-            name = shortcode.replace(":", "").replace("_", " ").replace("selector", "").title()
+            name = shortcode.replace(":", "").replace(
+                "_", " ",
+            ).replace("selector", "").title()
 
     src = cdn_fmt.format(codepoint=await codepoint(["{cp:x}".format(cp=ord(c)) for c in char]))
 
@@ -82,8 +85,8 @@ async def convert(char):
         return char
 
 
-async def convert_emoji(string):
+async def convert_emoji(string: str) -> str:
     x = []
     for ch in graphemes(string):
-        x.append(await convert(ch))
+        x.append(await convert(ch))  # type: ignore
     return "".join(x)

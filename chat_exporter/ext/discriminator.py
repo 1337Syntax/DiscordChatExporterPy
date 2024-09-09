@@ -1,4 +1,22 @@
-async def discriminator(user: str, discriminator: str):
-    if discriminator != "0":
-        return f"{user}#{discriminator}"
-    return user
+import discord
+
+
+def discriminator(user: discord.abc.User) -> str:
+    """
+    Formats the User's Discriminator
+
+    Parameters
+    ----------
+    user: :class:`discord.abc.User`
+        The User to Format the Discriminator
+
+    Returns
+    -------
+    :class:`str`
+        The Formatted Discriminator
+    """
+
+    if user.discriminator != "0":
+        return f"{user.name}#{user.discriminator}"
+    else:
+        return str(user)

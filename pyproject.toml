@@ -3,21 +3,21 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "chat_exporter"
-description = "A simple Discord chat exporter for Python Discord bots."
-version = "2.8.0"
+name = "DiscordChatExporterPy"
+keywords = ["chat exporter", "discord chat exporter", "discord", "discordpy"]
+description = "A Python Package to Export Discord Chat Logs to HTML-Transcripts"
 readme = "README.md"
 authors = [
-    { name="mahtoid", email="info@mahto.id" }
+    { name = "syntax",  email = "me@syntax.fo"  },
 ]
-requires-python = ">=3.6"
-license = { text = "GPL-3.0-only" }
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
 classifiers = [
-    "Operating System :: OS Independent",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Natural Language :: English",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -27,12 +27,39 @@ classifiers = [
     "Topic :: Software Development :: Libraries",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities",
-    "Typing :: Typed",
+    "Typing :: Typed"
 ]
-dependencies = ["aiohttp", "pytz", "grapheme", "emoji"]
-keywords = ["chat exporter", "discord chat exporter", "discord", "discordpy", "disnake", "pycord", "nextcord"]
+dynamic = ["version", "dependencies"]
 
 [project.urls]
-Homepage = "https://github.com/mahtoid/DiscordChatExporterPy"
-Discord = "https://discord.mahto.id/"
-Donate = "https://ko-fi.com/mahtoid"
+GitHub = "https://github.com/1337Syntax/DiscordChatExporterPy"
+
+[tool.setuptools]
+packages = [
+    "chat_exporter",
+]
+
+[tool.setuptools.dynamic]
+dependencies = { file = "requirements/_.txt" }
+
+[tool.autopep8]
+ignore = ["E731"]
+max_line_length = 88
+
+[tool.isort]
+case_sensitive = true
+combine_as_imports = true
+force_grid_wrap = 0
+include_trailing_comma = true
+known_discord = "discord"
+known_typing = "typing"
+line_length = 88
+lines_between_sections = 1
+multi_line_output = 3
+order_by_type = true
+reverse_relative = true
+sections = ["FUTURE", "DISCORD", "THIRDPARTY", "TYPING", "FIRSTPARTY", "LOCALFOLDER"]
+
+[tool.pyright]
+pythonVersion = "3.8"
+typeCheckingMode = "basic"

@@ -1,95 +1,170 @@
+import base64
 import html
+import random
 import re
-from chat_exporter.ext.emoji_convert import convert_emoji
+import string
+
+from typing import Dict, List, Optional
+
+from chat_exporter.ext import convert_emoji
 
 
 class ParseMarkdown:
-    def __init__(self, content):
-        self.content = content
-        self.code_blocks_content = []
+    """The Markdown Parser"""
 
+    CODE_BLOCK_CONTENT: Dict[str, str] = {}
 
-    async def standard_message_flow(self):
+    def __init__(self, content: str) -> None:
+        self.__content = content
+
+    @property
+    def content(self) -> str:
+        return self.__content
+
+    @content.setter
+    def content(self, value: str) -> None:
+        self.__content = value
+
+    async def standard_message_flow(self) -> str:
         self.parse_code_block_markdown()
         self.https_http_links()
+        self.parse_embedded_links()
         self.parse_normal_markdown()
 
         await self.parse_emoji()
-        self.reverse_code_block_markdown()
         return self.content
 
-    async def link_embed_flow(self):
+    async def standard_embed_flow(self) -> str:
+        self.parse_code_block_markdown()
+        self.https_http_links()
+        self.parse_embedded_links()
         self.parse_embed_markdown()
-        await self.parse_emoji()
-
-    async def standard_embed_flow(self):
-        self.parse_code_block_markdown()
-        self.https_http_links()
-        self.parse_embed_markdown()
         self.parse_normal_markdown()
 
         await self.parse_emoji()
-        self.reverse_code_block_markdown()
         return self.content
 
-    async def special_embed_flow(self):
-        self.https_http_links()
+    async def special_embed_flow(self) -> str:
         self.parse_code_block_markdown()
+        self.https_http_links()
+        self.parse_embedded_links()
         self.parse_normal_markdown()
 
         await self.parse_emoji()
-        self.reverse_code_block_markdown()
         return self.content
 
-    async def message_reference_flow(self):
+    async def message_reference_flow(self) -> str:
         self.strip_preserve()
         self.parse_code_block_markdown(reference=True)
+        self.https_http_links()
+        self.parse_embedded_links()
         self.parse_normal_markdown()
-        self.reverse_code_block_markdown()
         self.parse_br()
 
         return self.content
 
-    async def special_emoji_flow(self):
+    async def special_emoji_flow(self) -> str:
         await self.parse_emoji()
         return self.content
 
-    def parse_br(self):
-        self.content = self.content.replace("<br>", " ")
+    def parse_br(self) -> None:
+        self.__content = self.__content.replace("<br>", " ")
 
-    async def parse_emoji(self):
+    async def parse_emoji(self) -> None:
         holder = (
-            [r"&lt;:.*?:(\d*)&gt;", '<img class="emoji emoji--small" src="https://cdn.discordapp.com/emojis/%s.png">'],
-            [r"&lt;a:.*?:(\d*)&gt;", '<img class="emoji emoji--small" src="https://cdn.discordapp.com/emojis/%s.gif">'],
-            [r"<:.*?:(\d*)>", '<img class="emoji emoji--small" src="https://cdn.discordapp.com/emojis/%s.png">'],
-            [r"<a:.*?:(\d*)>", '<img class="emoji emoji--small" src="https://cdn.discordapp.com/emojis/%s.gif">'],
+            [
+                r"&lt;:.*?:(\d*)&gt;",
+                '<img class="emoji emoji--small" src="https://cdn.discordapp.com/emojis/%s.png">',
+            ],
+            [
+                r"&lt;a:.*?:(\d*)&gt;",
+                '<img class="emoji emoji--small" src="https://cdn.discordapp.com/emojis/%s.gif">',
+            ],
+            [
+                r"<:.*?:(\d*)>",
+                '<img class="emoji emoji--small" src="https://cdn.discordapp.com/emojis/%s.png">',
+            ],
+            [
+                r"<a:.*?:(\d*)>",
+                '<img class="emoji emoji--small" src="https://cdn.discordapp.com/emojis/%s.gif">',
+            ],
         )
 
-        self.content = await convert_emoji([word for word in self.content])
+        self.__content = await convert_emoji(self.__content)
 
         for x in holder:
             p, r = x
-            match = re.search(p, self.content)
+            match = re.search(p, self.__content)
             while match is not None:
                 emoji_id = match.group(1)
-                self.content = self.content.replace(self.content[match.start():match.end()],
-                                                    r % emoji_id)
-                match = re.search(p, self.content)
+                self.__content = self.__content.replace(
+                    self.__content[match.start():match.end()],
+                    r % emoji_id,
+                )
+                match = re.search(p, self.__content)
 
-    def strip_preserve(self):
+    def strip_preserve(self) -> None:
         p = r'<span class="chatlog__markdown-preserve">(.*)</span>'
         r = '%s'
 
         pattern = re.compile(p)
-        match = re.search(pattern, self.content)
+        match = re.search(pattern, self.__content)
         while match is not None:
             affected_text = match.group(1)
-            self.content = self.content.replace(self.content[match.start():match.end()],
-                                                r % affected_text)
-            match = re.search(pattern, self.content)
+            self.__content = self.__content.replace(
+                self.__content[match.start():match.end()],
+                r % affected_text,
+            )
+            match = re.search(pattern, self.__content)
 
-    def order_list_markdown_to_html(self):
-        lines = self.content.split('\n')
+    def ordered_list_markdown_to_html(self) -> None:
+        lines = self.__content.split('\n')
+        html = ''
+        indent_stack = [0]
+        started = True
+
+        for line in lines:
+            match = re.match(r'^(\s*)(\d+\.)\s+(.+)$', line)
+            if match:
+                indent, bullet, content = match.groups()
+                indent = len(indent)
+
+                if started:
+                    html += '<ol class="markup" style="padding-left: 20px;margin: 0 !important">\n'
+                    started = False
+                if indent % 2 == 0:
+                    while indent < indent_stack[-1]:
+                        html += '</ol>\n'
+                        indent_stack.pop()
+                    if indent > indent_stack[-1]:
+                        html += '<ol class="markup">\n'
+                        indent_stack.append(indent)
+                else:
+                    while indent + 1 < indent_stack[-1]:
+                        html += '</ol>\n'
+                        indent_stack.pop()
+                    if indent + 1 > indent_stack[-1]:
+                        html += '<ol class="markup">\n'
+                        indent_stack.append(indent + 1)
+
+                html += f'<li class="markup">{content.strip()}</li>\n'
+            else:
+                while len(indent_stack) > 1:
+                    html += '</ol>'
+                    indent_stack.pop()
+                if not started:
+                    html += '</ol>'
+                    started = True
+                html += line + '\n'
+
+        while len(indent_stack) > 1:
+            html += '</ol>\n'
+            indent_stack.pop()
+
+        self.__content: str = html
+
+    def unordered_list_markdown_to_html(self) -> None:
+        lines = self.__content.split('\n')
         html = ''
         indent_stack = [0]
         started = True
@@ -132,46 +207,40 @@ class ParseMarkdown:
             html += '</ul>\n'
             indent_stack.pop()
 
-        self.content = html
+        self.__content: str = html
 
-    def parse_normal_markdown(self):
-        self.order_list_markdown_to_html()
+    def parse_normal_markdown(self) -> None:
+        self.ordered_list_markdown_to_html()
+        self.unordered_list_markdown_to_html()
+
         holder = (
-            [r"__(.*?)__", '<span style="text-decoration: underline">%s</span>'],
-            [r"\*\*(.*?)\*\*", '<strong>%s</strong>'],
-            [r"\*(.*?)\*", '<em>%s</em>'],
-            [r"~~(.*?)~~", '<span style="text-decoration: line-through">%s</span>'],
-            [r"^###\s(.*?)\n", '<h3>%s</h1>'],
-            [r"^##\s(.*?)\n", '<h2>%s</h1>'],
-            [r"^#\s(.*?)\n", '<h1>%s</h1>'],
-            [r"\|\|(.*?)\|\|", '<span class="spoiler spoiler--hidden" onclick="showSpoiler(event, this)"> <span '
-                               'class="spoiler-text">%s</span></span>'],
+            [r"(?<!\\)__(.*?)__", r'<span style="text-decoration: underline">\1</span>'],
+            [r"(?<!\\)\*\*(.*?)\*\*", r'<strong>\1</strong>'],
+            [r"(?<!\\)\*(.*?)\*", r'<em>\1</em>'],
+            [r"(?<!\\)_([^_]+)_", r'<em>\1</em>'],
+            [r"(?<!\\)~~(.*?)~~", r'<span style="text-decoration: line-through">\1</span>'],
+            [r"(^|\n)###\s(.*?)\n", r'\1<h3>\2</h3>\n'],
+            [r"(^|\n)##\s(.*?)\n", r'\1<h2>\2</h2>\n'],
+            [r"(^|\n)#\s(.*?)\n", r'\1<h1>\2</h1>\n'],
+            [r"(?<!\\)\|\|(.*?)\|\|", r'<span class="spoiler spoiler--hidden" onclick="showSpoiler(event, this)"> <span class="spoiler-text">\1</span></span>'],
         )
-
-        for x in holder:
-            p, r = x
-
-            pattern = re.compile(p, re.M)
-            match = re.search(pattern, self.content)
-            while match is not None:
-                affected_text = match.group(1)
-                self.content = self.content.replace(self.content[match.start():match.end()], r % affected_text)
-                match = re.search(pattern, self.content)
+        for pattern, replacement in holder:
+            self.__content = re.sub(pattern, replacement, self.__content)
 
         # > quote
-        self.content = self.content.split("<br>")
-        y = None
-        new_content = ""
-        pattern = re.compile(r"^&gt;\s(.+)")
+        content = re.sub(r"\n", "<br>", self.__content).split("<br>")
+        pattern = re.compile(r"^&gt;\s*(.+)")
 
-        if len(self.content) == 1:
-            if re.search(pattern, self.content[0]):
-                self.content = f'<div class="quote">{self.content[0][5:]}</div>'
+        if len(content) == 1:
+            if re.search(pattern, content[0]):
+                self.content = f'<div class="quote">{content[0][5:]}</div>'
                 return
-            self.content = self.content[0]
+            self.content = content[0]
             return
 
-        for x in self.content:
+        y = None
+        new_content = ""
+        for x in content:
             if re.search(pattern, x) and y:
                 y = y + "<br>" + x[5:]
             elif not y:
@@ -187,17 +256,35 @@ class ParseMarkdown:
         if y:
             new_content = new_content + f'<div class="quote">{y}</div>'
 
-        self.content = new_content
+        self.content = re.sub("<br>", "\n", new_content)
 
-    def parse_code_block_markdown(self, reference=False):
-        markdown_languages = ["asciidoc", "autohotkey", "bash", "coffeescript", "cpp", "cs", "css",
-                              "diff", "fix", "glsl", "ini", "json", "md", "ml", "prolog", "py",
-                              "tex", "xl", "xml", "js", "html"]
-        self.content = re.sub(r"\n", "<br>", self.content)
+    def parse_code_block_markdown(self, reference: bool = False) -> None:
+        def _create_unique_id() -> str:
+            _id = "{{CODEBLOCK" + base64.b64encode(
+                ''.join(
+                    random.choices(
+                        string.ascii_letters +
+                        string.digits, k=16,
+                    ),
+                ).encode(),
+            ).decode() + "}}"
+            if _id in ParseMarkdown.CODE_BLOCK_CONTENT or _id in self.__content:
+                return _create_unique_id()
+            else:
+                return _id
+
+        markdown_languages = [
+            "asciidoc", "autohotkey", "bash",
+            "coffeescript", "cpp", "cs", "css",
+            "diff", "fix", "glsl", "ini", "json",
+            "md", "ml", "prolog", "py", "tex",
+            "xl", "xml", "js", "html",
+        ]
+        self.__content = re.sub(r"\n", "<br>", self.__content)
 
         # ```code```
         pattern = re.compile(r"```(.*?)```")
-        match = re.search(pattern, self.content)
+        match = re.search(pattern, self.__content)
         while match is not None:
             language_class = "nohighlight"
             affected_text = match.group(1)
@@ -214,74 +301,125 @@ class ParseMarkdown:
             while second_match is not None:
                 affected_text = re.sub(r"^<br>|<br>$", '', affected_text)
                 second_match = re.search(second_pattern, affected_text)
+
             affected_text = re.sub("  ", "&nbsp;&nbsp;", affected_text)
 
-            self.code_blocks_content.append(affected_text)
+            _id = _create_unique_id()
+            ParseMarkdown.CODE_BLOCK_CONTENT[_id] = affected_text
+
             if not reference:
-                self.content = self.content.replace(
-                    self.content[match.start():match.end()],
-                    '<div class="pre pre--multiline %s">%s</div>' % (language_class, f'%s{len(self.code_blocks_content)}')
+                self.__content = self.__content.replace(
+                    self.__content[match.start():match.end()],
+                    '<div class="pre pre--multiline %s">%s</div>' % (
+                        language_class, _id,
+                    ),
                 )
             else:
-                self.content = self.content.replace(
-                    self.content[match.start():match.end()],
-                    '<span class="pre pre-inline">%s</span>' % f'%s{len(self.code_blocks_content)}'
+                self.__content = self.__content.replace(
+                    self.__content[match.start():match.end()],
+                    '<span class="pre pre-inline">%s</span>' % _id,
                 )
 
-            match = re.search(pattern, self.content)
+            match = re.search(pattern, self.__content)
 
         # ``code``
         pattern = re.compile(r"``(.*?)``")
-        match = re.search(pattern, self.content)
+        match = re.search(pattern, self.__content)
         while match is not None:
             affected_text = match.group(1)
             affected_text = self.return_to_markdown(affected_text)
-            self.code_blocks_content.append(affected_text)
-            self.content = self.content.replace(self.content[match.start():match.end()],
-                                                '<span class="pre pre-inline">%s</span>' % f'%s{len(self.code_blocks_content)}')
-            match = re.search(pattern, self.content)
+            _id = _create_unique_id()
+            ParseMarkdown.CODE_BLOCK_CONTENT[_id] = affected_text
+            self.__content = self.__content.replace(
+                self.__content[match.start():match.end()],
+                '<span class="pre pre-inline">%s</span>' % _id,
+            )
+            match = re.search(pattern, self.__content)
 
         # `code`
         pattern = re.compile(r"`(.*?)`")
-        match = re.search(pattern, self.content)
+        match = re.search(pattern, self.__content)
         while match is not None:
             affected_text = match.group(1)
             affected_text = self.return_to_markdown(affected_text)
-            self.code_blocks_content.append(affected_text)
-            self.content = self.content.replace(self.content[match.start():match.end()],
-                                                '<span class="pre pre-inline">%s</span>' % f'%s{len(self.code_blocks_content)}')
-            match = re.search(pattern, self.content)
+            _id = _create_unique_id()
+            ParseMarkdown.CODE_BLOCK_CONTENT[_id] = affected_text
+            self.__content = self.__content.replace(
+                self.__content[match.start():match.end()],
+                '<span class="pre pre-inline">%s</span>' % _id,
+            )
+            match = re.search(pattern, self.__content)
 
-        self.content = re.sub(r"<br>", "\n", self.content)
+        self.__content = re.sub(r"<br>", "\n", self.__content)
 
-    def reverse_code_block_markdown(self):
-        for x in range(len(self.code_blocks_content)):
-            self.content = self.content.replace(f'%s{x + 1}', self.code_blocks_content[x])
+    @staticmethod
+    def reverse_code_block_markdown(content: str) -> str:
+        for key, value in ParseMarkdown.CODE_BLOCK_CONTENT.items():
+            content = content.replace(key, value)
 
-    def parse_embed_markdown(self):
-        # [Message](Link)
-        pattern = re.compile(r"\[(.+?)]\((.+?)\)")
-        match = re.search(pattern, self.content)
-        while match is not None:
+        return re.sub(r"<br>", "\n", content)
+
+    def parse_embedded_links(self) -> None:
+        # [Text](Link 'Title')
+
+        pattern = re.compile(
+            r"\[([^\]]+)\]\(([^)]+?)(?:\s*&#x27;([^&#]+)&#x27;)?\)",
+            re.DOTALL,
+        )
+        matches = pattern.finditer(self.__content)
+
+        modified_parts: List[str] = []
+        last_end = 0
+
+        for match in matches:
             affected_text = match.group(1)
             affected_url = match.group(2)
-            self.content = self.content.replace(self.content[match.start():match.end()],
-                                                '<a href="%s">%s</a>' % (affected_url, affected_text))
-            match = re.search(pattern, self.content)
+            affected_title = match.group(3)
 
-        self.content = self.content.split("\n")
+            if not affected_text or not affected_url:
+                continue
+
+            affected_text = html.unescape(affected_text)
+            affected_url = html.unescape(affected_url)
+            affected_title = html.unescape(affected_title) if affected_title else None
+
+            if affected_url[0] == "<" and affected_url[-1] == ">":
+                affected_url = affected_url[1:-1]
+
+            if affected_url.startswith("http://") or affected_url.startswith("https://"):
+                affected_url = affected_url
+            else:
+                affected_url = None
+
+            if affected_url and affected_title:
+                replacement = f'<a href="{affected_url}" target="_blank" title="{affected_title}">{affected_text}</a>'
+            elif affected_url:
+                replacement = f'<a href="{affected_url}" target="_blank">{affected_text}</a>'
+            else:
+                continue
+
+            modified_parts.append(self.__content[last_end:match.start()])
+            modified_parts.append(replacement)
+            last_end = match.end()
+
+        modified_parts.append(self.__content[last_end:])
+
+        self.__content = ''.join(modified_parts)
+
+    def parse_embed_markdown(self) -> None:
+        content = self.__content.split("\n")
         y = None
         new_content = ""
         pattern = re.compile(r"^>\s(.+)")
 
-        if len(self.content) == 1:
-            if re.search(pattern, self.content[0]):
-                self.content = f'<div class="quote">{self.content[0][2:]}</div>'
+        if len(content) == 1:
+            if re.search(pattern, content[0]):
+                self.__content = f'<div class="quote">{content[0][2:]}</div>'
                 return
-            self.content = self.content[0]
+            self.__content = content[0]
             return
 
-        for x in self.content:
+        for x in content:
             if re.search(pattern, x) and y:
                 y = y + "\n" + x[2:]
             elif not y:
@@ -297,37 +435,9 @@ class ParseMarkdown:
         if y:
             new_content = new_content + f'<div class="quote">{y}</div>'
 
-        self.content = new_content
+        self.__content = new_content
 
-    @staticmethod
-    def order_list_html_to_markdown(content):
-        lines = content.split('<br>')
-        html = ''
-        ul_level = -1
-
-        for line in lines:
-            if '<ul class="markup">' in line:
-                ul_level += 1
-                line = line.replace('<ul class="markup">', '')
-                if line != "":
-                    html += line + "\n"
-            elif "</ul>" in line:
-                ul_level -= 1
-            elif '<li class="markup">' in line:
-                match = re.match(r'<li class="markup">(.+?)</li>', line)
-                if match:
-                    matched_content = match.group(1)
-                    spaces = ul_level * 2
-                    html += " " * spaces + "-" + matched_content + "\n"
-                else:
-                    html += line
-            else:
-                html += line
-
-        return html
-
-    def return_to_markdown(self, content):
-        # content = self.order_list_html_to_markdown(content)
+    def return_to_markdown(self, content: str) -> str:
         holders = (
             [r"<strong>(.*?)</strong>", '**%s**'],
             [r"<em>([^<>]+)</em>", '*%s*'],
@@ -337,51 +447,44 @@ class ParseMarkdown:
             [r'<span style="text-decoration: underline">([^<>]+)</span>', '__%s__'],
             [r'<span style="text-decoration: line-through">([^<>]+)</span>', '~~%s~~'],
             [r'<div class="quote">(.*?)</div>', '> %s'],
-            [r'<span class="spoiler spoiler--hidden" onclick="showSpoiler\(event, this\)"> <span '
-             r'class="spoiler-text">(.*?)<\/span><\/span>', '||%s||'],
-            [r'<span class="unix-timestamp" data-timestamp=".*?" raw-content="(.*?)">.*?</span>', '%s']
+            [r'<span class="spoiler spoiler--hidden" onclick="showSpoiler\(event, this\)"> <span class="spoiler-text">(.*?)<\/span><\/span>', '||%s||'],
+            [r'<span class="unix-timestamp" data-timestamp=".*?" data-timestamp-format=".*?" data-timestamp-raw="(.*?)">', '%s'],
+            [
+                r'<a href="([^"]+)" target="_blank" title="([^"]+)">([^<]+)</a>',
+                '[%s](%s "%s")',
+            ],
+            [r'<a href="([^"]+)" target="_blank">([^<]+)</a>', '[%s](%s)'],
+            [r'<a href="([^"]+)" target="_blank">([^<]+)</a>', '%s'],
         )
 
         for x in holders:
             p, r = x
-
             pattern = re.compile(p)
             match = re.search(pattern, content)
             while match is not None:
                 affected_text = match.group(1)
-                content = content.replace(content[match.start():match.end()],
-                                          r % html.escape(affected_text))
+                content = content.replace(
+                    content[match.start():match.end()],
+                    r % html.escape(affected_text),
+                )
                 match = re.search(pattern, content)
-
-        pattern = re.compile(r'<a href="(.*?)">(.*?)</a>')
-        match = re.search(pattern, content)
-        while match is not None:
-            affected_url = match.group(1)
-            affected_text = match.group(2)
-            if affected_url != affected_text:
-                content = content.replace(content[match.start():match.end()],
-                                          '[%s](%s)' % (affected_text, affected_url))
-            else:
-                content = content.replace(content[match.start():match.end()],
-                                          '%s' % affected_url)
-            match = re.search(pattern, content)
 
         return content.lstrip().rstrip()
 
-    def https_http_links(self):
-        def remove_silent_link(url, raw_url=None):
+    def https_http_links(self) -> None:
+        def remove_silent_link(url: str, raw_url: Optional[str] = None) -> str:
             pattern = rf"`.*{raw_url}.*`"
-            match = re.search(pattern, self.content)
+            match = re.search(pattern, self.__content)
 
             if "&lt;" in url and "&gt;" in url and not match:
                 return url.replace("&lt;", "").replace("&gt;", "")
             return url
 
-        content = re.sub("\n", "<br>", self.content)
-        output = []
+        content = re.sub("\n", "<br>", self.__content)
+        output: List[str] = []
+
         if "http://" in content or "https://" in content and "](" not in content:
             for word in content.replace("<br>", " <br>").split():
-
                 if "http" not in word:
                     output.append(word)
                     continue
@@ -391,10 +494,11 @@ class ParseMarkdown:
                     match_url = re.search(pattern, word)
                     if match_url:
                         match_url = match_url.group(1)
-                        url = f'<a href="https://{match_url}">https://{match_url}</a>'
+                        url = f'<a href="https://{match_url}" target="_blank">https://{match_url}</a>'
                         word = word.replace("https://" + match_url, url)
                         word = word.replace("http://" + match_url, url)
                     output.append(remove_silent_link(word, match_url))
+
                 elif "https://" in word:
                     pattern = r"https://[^\s>`\"*]*"
                     word_link = re.search(pattern, word)
@@ -403,9 +507,10 @@ class ParseMarkdown:
                         continue
                     elif word_link:
                         word_link = word_link.group()
-                        word_full = f'<a href="{word_link}">{word_link}</a>'
+                        word_full = f'<a href="{word_link}" target="_blank">{word_link}</a>'
                         word = re.sub(pattern, word_full, word)
                     output.append(remove_silent_link(word))
+
                 elif "http://" in word:
                     pattern = r"http://[^\s>`\"*]*"
                     word_link = re.search(pattern, word)
@@ -414,10 +519,12 @@ class ParseMarkdown:
                         continue
                     elif word_link:
                         word_link = word_link.group()
-                        word_full = f'<a href="{word_link}">{word_link}</a>'
+                        word_full = f'<a href="{word_link}" target="_blank">{word_link}</a>'
                         word = re.sub(pattern, word_full, word)
                     output.append(remove_silent_link(word))
+
                 else:
                     output.append(word)
+
             content = " ".join(output)
-            self.content = re.sub("<br>", "\n", content)
+            self.__content = re.sub("<br>", "\n", content)

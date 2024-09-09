@@ -1,41 +1,26 @@
-import re
+import discord
 
-from chat_exporter.ext.emoji_convert import convert_emoji
-from chat_exporter.ext.html_generator import fill_out, emoji, custom_emoji, PARSE_MODE_NONE
+from chat_exporter.ext import ParseMode, convert_emoji, custom_emoji, emoji, fill_out
 
 
 class Reaction:
-    def __init__(self, reaction, guild):
-        self.reaction = reaction
-        self.guild = guild
+    """The Reaction Converter"""
 
-    async def flow(self):
-        await self.build_reaction()
-
-        return self.reaction
-
-    async def build_reaction(self):
-        if ":" in str(self.reaction.emoji):
-            emoji_animated = re.compile(r"&lt;a:.*:.*&gt;")
-            if emoji_animated.search(str(self.reaction.emoji)):
-                await self.create_discord_reaction("gif")
-            else:
-                await self.create_discord_reaction("png")
+    @staticmethod
+    async def flow(guild: discord.Guild, *, reaction: discord.Reaction) -> str:
+        if reaction.is_custom_emoji():
+            assert isinstance(reaction.emoji, (discord.Emoji, discord.PartialEmoji))
+            return await fill_out(
+                guild, custom_emoji, [
+                    ("EMOJI", str(reaction.emoji.id), ParseMode.NONE),
+                    ("EMOJI_COUNT", str(reaction.count), ParseMode.NONE),
+                    ("EMOJI_FILE", "gif" if reaction.emoji.animated else "png", ParseMode.NONE),
+                ],
+            )
         else:
-            await self.create_standard_emoji()
-
-    async def create_discord_reaction(self, emoji_type):
-        pattern = r":.*:(\d*)"
-        emoji_id = re.search(pattern, str(self.reaction.emoji)).group(1)
-        self.reaction = await fill_out(self.guild, custom_emoji, [
-            ("EMOJI", str(emoji_id), PARSE_MODE_NONE),
-            ("EMOJI_COUNT", str(self.reaction.count), PARSE_MODE_NONE),
-            ("EMOJI_FILE", emoji_type, PARSE_MODE_NONE)
-        ])
-
-    async def create_standard_emoji(self):
-        react_emoji = await convert_emoji(self.reaction.emoji)
-        self.reaction = await fill_out(self.guild, emoji, [
-            ("EMOJI", str(react_emoji), PARSE_MODE_NONE),
-            ("EMOJI_COUNT", str(self.reaction.count), PARSE_MODE_NONE)
-        ])
+            return await fill_out(
+                guild, emoji, [
+                    ("EMOJI", await convert_emoji(str(reaction.emoji)), ParseMode.NONE),
+                    ("EMOJI_COUNT", str(reaction.count), ParseMode.NONE),
+                ],
+            )

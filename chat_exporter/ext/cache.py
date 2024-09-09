@@ -1,34 +1,38 @@
 from functools import wraps
-from typing import Any, Dict, Tuple
 
-_internal_cache: dict = {}
+from typing import Any, Awaitable, Callable, Dict, Tuple, TypeVar
+
+F = TypeVar('F', bound=Callable[..., Awaitable[Any]])
 
 
-def _wrap_and_store_coroutine(cache, key, coro):
-    async def func():
+_internal_cache: Dict[str, Any] = {}
+
+
+def _wrap_and_store_coroutine(cache: Dict[str, Any], key: str, coro: Awaitable[Any]) -> Awaitable[Any]:
+    async def func() -> Any:
         value = await coro
         cache[key] = value
         return value
     return func()
 
 
-def _wrap_new_coroutine(value):
-    async def new_coroutine():
+def _wrap_new_coroutine(value: Any) -> Awaitable[Any]:
+    async def new_coroutine() -> Any:
         return value
     return new_coroutine()
 
 
-def clear_cache():
+def clear_cache() -> None:
     _internal_cache.clear()
 
 
-def cache():
-    def decorator(func):
+def cache() -> Callable[[F], F]:
+    """Caches the Result of a Coroutine Function"""
+
+    def decorator(func: F) -> F:
         def _make_key(args: Tuple[Any, ...], kwargs: Dict[str, Any]) -> str:
-            def _true_repr(o):
+            def _true_repr(o: Any) -> str:
                 if o.__class__.__repr__ is object.__repr__:
-                    # this is how MessageConstruct can retain
-                    # caching across multiple instances
                     return f'<{o.__class__.__module__}.{o.__class__.__name__}>'
                 return repr(o)
 
@@ -41,7 +45,7 @@ def cache():
             return ':'.join(key)
 
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Awaitable[Any]:
             key = _make_key(args, kwargs)
             try:
                 value = _internal_cache[key]
@@ -51,7 +55,7 @@ def cache():
             else:
                 return _wrap_new_coroutine(value)
 
-        wrapper.cache = _internal_cache
-        wrapper.clear_cache = _internal_cache.clear()
-        return wrapper
+        wrapper.cache = _internal_cache  # type: ignore
+        wrapper.clear_cache = _internal_cache.clear  # type: ignore
+        return wrapper  # type: ignore
     return decorator

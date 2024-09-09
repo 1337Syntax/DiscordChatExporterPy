@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Discord
-    url: https://discord.mahto.id/
-    about: Find help within the Discord community
+  - name: Questions
+    url: https://github.com/1337Syntax/DiscordChatExporterPy/discussions
+    about: Need Help with Using the Library? Create a Discussion!

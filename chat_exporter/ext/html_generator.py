@@ -1,46 +1,60 @@
+import discord
+
 import os
+from enum import Enum
 
-from chat_exporter.parse.mention import ParseMention
-from chat_exporter.parse.markdown import ParseMarkdown
+from typing import List, Tuple, Union
 
-dir_path = os.path.abspath(os.path.join((os.path.dirname(os.path.realpath(__file__))), ".."))
+from chat_exporter.parse import ParseMarkdown, ParseMention
 
-PARSE_MODE_NONE = 0
-PARSE_MODE_NO_MARKDOWN = 1
-PARSE_MODE_MARKDOWN = 2
-PARSE_MODE_EMBED = 3
-PARSE_MODE_SPECIAL_EMBED = 4
-PARSE_MODE_REFERENCE = 5
-PARSE_MODE_EMOJI = 6
+dir_path = os.path.abspath(
+    os.path.join(
+        (os.path.dirname(os.path.realpath(__file__))), "..",
+    ),
+)
 
 
-async def fill_out(guild, base, replacements):
+class ParseMode(Enum):
+    NONE = 0
+    NO_MARKDOWN = 1
+    MARKDOWN = 2
+    EMBED = 3
+    SPECIAL_EMBED = 4
+    REFERENCE = 5
+    EMOJI = 6
+
+
+async def fill_out(guild: discord.Guild, base: str, replacements: List[Union[Tuple[str, str], Tuple[str, str, ParseMode]]], *, finalise: bool = False) -> str:
     for r in replacements:
-        if len(r) == 2:  # default case
+        if len(r) == 2:
             k, v = r
-            r = (k, v, PARSE_MODE_MARKDOWN)
+            r = (k, v, ParseMode.MARKDOWN)
 
         k, v, mode = r
 
-        if mode != PARSE_MODE_NONE:
-            v = await ParseMention(v, guild).flow()
-        if mode == PARSE_MODE_MARKDOWN:
+        if mode != ParseMode.NONE:
+            v = await ParseMention.flow(guild, content=v)
+
+        if mode == ParseMode.MARKDOWN:
             v = await ParseMarkdown(v).standard_message_flow()
-        elif mode == PARSE_MODE_EMBED:
+        elif mode == ParseMode.EMBED:
             v = await ParseMarkdown(v).standard_embed_flow()
-        elif mode == PARSE_MODE_SPECIAL_EMBED:
+        elif mode == ParseMode.SPECIAL_EMBED:
             v = await ParseMarkdown(v).special_embed_flow()
-        elif mode == PARSE_MODE_REFERENCE:
+        elif mode == ParseMode.REFERENCE:
             v = await ParseMarkdown(v).message_reference_flow()
-        elif mode == PARSE_MODE_EMOJI:
+        elif mode == ParseMode.EMOJI:
             v = await ParseMarkdown(v).special_emoji_flow()
 
         base = base.replace("{{" + k + "}}", v.strip())
 
+    if finalise:
+        base = ParseMarkdown.reverse_code_block_markdown(base)
+
     return base
 
 
-def read_file(filename):
+def read_file(filename: str) -> str:
     with open(filename, "r") as f:
         s = f.read()
     return s
@@ -48,8 +62,8 @@ def read_file(filename):
 
 # MESSAGES
 start_message = read_file(dir_path + "/html/message/start.html")
-bot_tag = read_file(dir_path + "/html/message/bot-tag.html")
-bot_tag_verified = read_file(dir_path + "/html/message/bot-tag-verified.html")
+app_tag = read_file(dir_path + "/html/message/app-tag.html")
+app_tag_verified = read_file(dir_path + "/html/message/app-tag-verified.html")
 message_content = read_file(dir_path + "/html/message/content.html")
 message_reference = read_file(dir_path + "/html/message/reference.html")
 message_interaction = read_file(dir_path + "/html/message/interaction.html")
@@ -65,8 +79,12 @@ meta_data_temp = read_file(dir_path + "/html/message/meta.html")
 # COMPONENTS
 component_button = read_file(dir_path + "/html/component/component_button.html")
 component_menu = read_file(dir_path + "/html/component/component_menu.html")
-component_menu_options = read_file(dir_path + "/html/component/component_menu_options.html")
-component_menu_options_emoji = read_file(dir_path + "/html/component/component_menu_options_emoji.html")
+component_menu_options = read_file(
+    dir_path + "/html/component/component_menu_options.html",
+)
+component_menu_options_emoji = read_file(
+    dir_path + "/html/component/component_menu_options_emoji.html",
+)
 
 # EMBED
 embed_body = read_file(dir_path + "/html/embed/body.html")
@@ -95,6 +113,5 @@ video_attachment = read_file(dir_path + "/html/attachment/video.html")
 total = read_file(dir_path + "/html/base.html")
 
 # SCRIPT
-fancy_time = read_file(dir_path + "/html/script/fancy_time.html")
 channel_topic = read_file(dir_path + "/html/script/channel_topic.html")
 channel_subject = read_file(dir_path + "/html/script/channel_subject.html")

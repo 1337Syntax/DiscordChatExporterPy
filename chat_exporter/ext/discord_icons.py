@@ -1,0 +1,21 @@
+class DiscordIcons:
+    """Icon URLs for Discord Elements"""
+
+    logo = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-logo.svg'
+    default_avatar = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-default.png'
+    pinned_message_icon = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-pinned.svg'
+    channel_icon = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-hashtag.svg'
+    thread_channel_icon = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-thread.svg'
+    thread_remove_recipient = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-thread-remove-recipient.svg'
+    thread_add_recipient = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-thread-add-recipient.svg'
+    file_attachment_audio = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-audio.svg'
+    file_attachment_acrobat = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-acrobat.svg'
+    file_attachment_webcode = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-webcode.svg'
+    file_attachment_code = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-code.svg'
+    file_attachment_document = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-document.svg'
+    file_attachment_archive = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-archive.svg'
+    file_attachment_unknown = 'https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-unknown.svg'
+    button_external_link = '<img class="chatlog__reference-icon" src="https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-external-link.svg">'
+    reference_attachment_icon = '<img class="chatlog__reference-icon" src="https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-attachment.svg">'
+    interaction_command_icon = '<img class="chatlog__interaction-icon" src="https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-command.svg">'
+    interaction_dropdown_icon = '<img class="chatlog__dropdown-icon" src="https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-dropdown.svg">'

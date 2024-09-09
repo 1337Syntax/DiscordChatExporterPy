@@ -1,478 +1,347 @@
 <div align="center">
+   <h1>DiscordChatExporterPy</h1>
 
-[![Version][pypi-version]][pypi-url]
-[![Language][language-dom]][github-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![GPL License][license-shield]][license-url]
-
-
-  <h2>DiscordChatExporterPy</h2>
-
-  <p>
-    Export Discord chats with your discord.py (or fork) bots!
-    <br />
-    <a href="https://discord.mahto.id/">Join Discord</a>
-    ·
-    <a href="https://github.com/mahtoid/DiscordChatExporterPy/issues/new?assignees=&labels=bug&template=bug-report.yml">Report Bug</a>
-    ·
-    <a href="https://github.com/mahtoid/DiscordChatExporterPy/issues/new?assignees=&labels=enhancement&template=feature-request.yml">Request Feature</a>
-  </p>
+   <p>
+      A Library to Export your Discord Chats to a HTML File via your Python-Bot!
+   </p>
+   <p>
+      <a href="#installation">Get Started</a>
+      •
+      <a href="https://github.com/1337Syntax/DiscordChatExporterPy/issues/new?assignees=&labels=bug&template=bug-report.yml">Bug Report</a>
+      •
+      <a href="https://github.com/1337Syntax/DiscordChatExporterPy/issues/new?assignees=&labels=enhancement&template=feature-request.yml">Request Feature</a>
+   </p>
 </div>
 
 ---
+
+> [!NOTE]
+> This Package is Only Usable for [discord.py](https://github.com/Rapptz/discord.py 'discord.py') Bots or Forks that Use the Same Namespace (`discord`), such as [PyCord](https://github.com/Pycord-Development/pycord 'Py-Cord').
+
+<!-- ## Example Output
+View a [Live Demo](https://example.com 'Example Transcript') of an Exported Chat Transcript. -->
+
+<br />
+
 ## Installation
+**Python 3.8 or Higher is Required!**
 
-To install the library to your virtual environment, for bot usage, run the command:
-```sh 
-pip install chat-exporter
+This Package is NOT Available on PyPI, but You Can Install it via GitHub:
+
+```bash
+pip install git+https://github.com/1337Syntax/DiscordChatExporterPy
 ```
 
-To clone the repository locally, run the command:
-```sh
-git clone https://github.com/mahtoid/DiscordChatExporterPy
-```
+<br />
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
----
 ## Usage
+### Creating the Export:
+There are 3 Methods Available to Export the Channel:
 
-There are currently 3 methods (functions) to `chat-exporter` which you can use to export your chat.<br/>
-_Expand the blocks below to learn the functions, arguments and usages._
-<details><summary><b>Basic Usage</b></summary>
+<details>
+   <summary><b>Basic Usage via <code>.quick_export()</code></b></summary>
 
-`.quick_export()` is the simplest way of using chat-exporter.
-
-Using the _quick_export_ function will gather the history of the channel you give, build the transcript then post the file and embed directly to the channel - returning a message object gathered from the message it posted.
-
-This is mostly seen as a demo function, as opposed to a command you should actually use. 
-
-**Required Argument(s):**<br/>
-`channel`: `discord.TextChannel` object, whether `ctx.channel` or any channel you gather.
-
-**Optional Argument(s):**<br/>
-`bot`: `commands.Bot` object to gather members who are no longer in your guild.
-
-**Return Argument:**<br/>
-`discord.Message`: The message _quick_export_ will send, containing the embed and exported chat file.
-
-**Example:**
-```python
-import discord
-import chat_exporter
-from discord.ext import commands
-
-intents = discord.Intents.default()
-intents.members = True
-intents.message_content = True
-
-bot = commands.Bot(command_prefix="!", intents=intents)
-
-...
-
-@bot.command()
-async def save(ctx: commands.Context):
-    await chat_exporter.quick_export(ctx.channel)
-
-...
-```
-
+   > #### Parameters:
+   > - channel: `discord.TextChannel` | `discord.Thread`
+   >    - The Channel to Export
+   > - bot: Optional[`discord.Client`]
+   >    - The Bot Instance to Use for Fetching
+   >
+   >
+   > #### Returns:
+   > - Optional[`discord.Message`]
+   >    - The Message of the Export if Successful
+   >
+   > #### Example:
+   > ```python
+   > import discord
+   > from discord.ext import commands
+   >
+   > import chat_exporter
+   >
+   > bot = commands.Bot(...)
+   >
+   > @bot.command()
+   > @commands.guild_only()
+   > async def export(ctx: commands.Context):
+   >    await chat_exporter.quick_export(ctx.channel, bot)
+   > ```
 </details>
 
-<details><summary><b>Customisable Usage</b></summary>
+<details>
+   <summary><b>Custom Usage via <code>.export()</code></b></summary>
 
-`.export()` is the most efficient and flexible method to export a chat using chat-exporter.
-
-Using the _export_ function will generate a transcript using the channel you pass in, along with using any of the custom kwargs passed in to set limits, timezone, 24h formats and more (listed below).
-
-This would be the main function to use within chat-exporter.
-
-**Required Argument(s):**<br/>
-`channel`: `discord.TextChannel` object, whether `ctx.channel` or any channel you gather.
-
-**Optional Argument(s):**<br/>
-`limit`: Integer value to set the limit (amount of messages) the chat exporter gathers when grabbing the history (default=unlimited).<br/>
-`tz_info`: String value of a [TZ Database name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List) to set a custom timezone for the exported messages (default=UTC).<br/>
-`guild`: `discord.Guild` object which can be passed in to solve bugs for certain forks.<br/>
-`military_time`: Boolean value to set a 24h format for times within your exported chat (default=False | 12h format).<br/>
-`fancy_times`: Boolean value which toggles the 'fancy times' (Today|Yesterday|Day).<br/>
-`before`: `datetime.datetime` object which allows to gather messages from before a certain date.<br/>
-`after`: `datetime.datetime` object which allows to gather messages from after a certain date.<br/>
-`bot`: `commands.Bot` object to gather members who are no longer in your guild.<br/>
-`attachment_handler`: `chat_exporter.AttachmentHandler` object to export assets to in order to make them available after the `channel` got deleted.<br/>
-
-**Return Argument:**<br/>
-`transcript`: The HTML build-up for you to construct the HTML File with Discord.
-
-**Example:**
-```python
-import io
-
-...
-
-@bot.command()
-async def save(ctx: commands.Context, limit: int = 100, tz_info: str = "UTC", military_time: bool = True):
-    transcript = await chat_exporter.export(
-        ctx.channel,
-        limit=limit,
-        tz_info=tz_info,
-        military_time=military_time,
-        bot=bot,
-    )
-
-    if transcript is None:
-        return
-
-    transcript_file = discord.File(
-        io.BytesIO(transcript.encode()),
-        filename=f"transcript-{ctx.channel.name}.html",
-    )
-
-    await ctx.send(file=transcript_file)
-```
-</details>
-<details><summary><b>Raw Usage</b></summary>
-
-`.raw_export()` is for the crazy people who like to do their own thing when using chat-exporter.
-
-Using the _raw_export_ function will generate a transcript using the list of messages you pass in, along with using any of the custom kwargs passed in to set limits, timezone, 24h formats and more (listed below).
-
-This would be for people who want to filter what content to export.
-
-**Required Argument(s):**<br/>
-`channel`: `discord.TextChannel` object, whether `ctx.channel` or any channel you gather (this is just for padding the header).<br/>
-`messages`: A list of Message objects which you wish to export to an HTML file.
-
-**Optional Argument(s):**<br/>
-`tz_info`: String value of a [TZ Database name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List) to set a custom timezone for the exported messages (default=UTC)<br/>
-`military_time`: Boolean value to set a 24h format for times within your exported chat (default=False | 12h format)<br/>
-`fancy_times`: Boolean value which toggles the 'fancy times' (Today|Yesterday|Day)<br/>
-`bot`: `commands.Bot` object to gather members who are no longer in your guild.
-`attachment_handler`: `chat_exporter.AttachmentHandler` object to export assets to in order to make them available after the `channel` got deleted.<br/>
-
-**Return Argument:**<br/>
-`transcript`: The HTML build-up for you to construct the HTML File with Discord.
-
-**Example:**
-```python
-import io
-
-...
-
-@bot.command()
-async def purge(ctx: commands.Context, tz_info: str, military_time: bool):
-    deleted_messages = await ctx.channel.purge()
-
-    transcript = await chat_exporter.raw_export(
-        ctx.channel,
-        messages=deleted_messages,
-        tz_info=tz_info,
-        military_time=military_time,
-        bot=bot,
-    )
-
-    if transcript is None:
-        return
-
-    transcript_file = discord.File(
-        io.BytesIO(transcript.encode()),
-        filename=f"transcript-{ctx.channel.name}.html",
-    )
-
-    await ctx.send(file=transcript_file)
-```
+   > #### Parameters:
+   > - channel: `discord.TextChannel` | `discord.Thread`
+   >    - The Channel to Export
+   > - limit: Optional[`int`]
+   >    - The Limit of Messages to Capture
+   > - bot: Optional[`discord.Client`]
+   >    - The Bot Instance to Use for Fetching
+   > - military_time: Optional[`bool`]
+   >    - Whether to Use Military Time
+   > - before: Optional[`datetime.datetime`]
+   >    - The Time to Capture Messages Before
+   > - after: Optional[`datetime.datetime`]
+   >    - The Time to Capture Messages After
+   > - attachment_handler: Optional[`AttachmentHandler`]
+   >    - The Attachment Handler to Use
+   >
+   >
+   > #### Returns:
+   > - Optional[`str`]
+   >    - The HTML of the Export
+   >
+   > #### Example:
+   > ```python
+   > import discord
+   > from discord.ext import commands
+   >
+   > import chat_exporter
+   > import io
+   >
+   > bot = commands.Bot(...)
+   >
+   > @bot.command()
+   > @commands.guild_only()
+   > async def export(ctx: commands.Context):
+   >    transcript = await chat_exporter.export(
+   >        ctx.channel,
+   >        bot=bot,
+   >        military_time=False,
+   >    )
+   >    if transcript is None: # Failed to Create Transcript - Traceback is Printed to Console
+   >        return
+   >
+   >   await ctx.reply(
+   >       file=discord.File(
+   >           io.StringIO(transcript),
+   >           filename="transcript.html",
+   >       )
+   >   )
+   > ```
 </details>
 
+<details>
+   <summary><b>Advanced Usage via <code>.raw_export()</code></b></summary>
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
----
-## Attachment Handler
-
-Due to Discords newly introduced restrictions on to their CDN, we have introduced an Attachment Handler. This handler
-will assist you with circumventing the 'broken' and 'dead-assets' which arise when former attachments hosted by Discord
-reach their expiration date.
-
-The `AttachmentHandler` serves as a template for you to implement your own asset handler. Below are two basic examples on
-how to use the `AttachmentHandler`. One using the example of storing files on a local webserver, with the other being
-an example of storing them on Discord *(the latter merely just being an example, this will still obviously run in to
-the expiration issue)*.
-
-If you do not specify an attachment handler, chat-exporter will continue to use the (proxy) URLs for the assets.
-
-<details><summary><b>Concept</b></summary>
-
-The concept of implementing such an AttachmentHandler is very easy. In the following a short general procedure is 
-described to write your own AttachmentHandler fitting your storage solution. Here we will assume, that we store the 
-attachments in a cloud storage.
-
-1. Subclassing
-Start by subclassing `chat_exporter.AttachmentHandler` and implement the `__init__` method if needed. This should look 
-something like this:
-
-```python
-from chat_exporter import AttachmentHandler
-from cloud_wrapper import CloudClient
-
-
-class MyAttachmentHandler(AttachmentHandler):
-    def __init__(self, *args, **kwargs):
-        # Your initialization code here
-        # in your case we just create the cloud client
-        self.cloud_client = CloudClient()
-
-```
-
-2. Overwrite process_asset
-The `process_asset` method is the method that is called for each asset in the chat. Here we have to implement the 
-upload logic and the generation of the asset url from the uploaded asset.
-    
-```python
-import io
-import aiohttp
-from chat_exporter import AttachmentHandler
-from cloud_wrapper import CloudClient
-from discord import Attachment
-
-
-class MyAttachmentHandler(AttachmentHandler):
-    def __init__(self, *args, **kwargs):
-        # Your initialization code here
-        # in your case we just create the cloud client
-        self.cloud_client = CloudClient()
-
-    async def process_asset(self, attachment: Attachment):
-        # Your upload logic here, in our example we just upload the asset to the cloud
-        
-        # first we need to authorize the client
-        await self.cloud_client.authorize()
-        
-        # then we fetch the content of the attachment
-        async with aiohttp.ClientSession() as session:
-            async with session.get(attachment.url) as res:
-                if res.status != 200:
-                    res.raise_for_status()
-                data = io.BytesIO(await res.read())
-        data.seek(0)
-        
-        # and upload it to the cloud, back we get some sort of identifier for the uploaded file
-        asset_id = await self.cloud_client.upload(data)
-        
-        # now we can generate the asset url from the identifier
-        asset_url = await self.cloud_client.get_share_url(asset_id, shared_with="everyone")
-        
-        # and set the proxy url attribute of the attachment to the generated url
-        attachment.proxy_url = asset_url
-        return attachment
-
-```
-
-Note
-1. The `process_asset` method should return the attachment object with the proxy_url attribute set to the generated url.
-2. The `process_asset` method should be an async method, as it is likely that you have to do some async operations 
-   like fetching the content of the attachment or uploading it to the cloud.
-3. You are free to add other methods in your class, and call them from `process_asset` if you need to do some 
-   operations before or after the upload of the asset. But the `process_asset` method is the only method that is 
-called from chat-exporter.
-
+   > #### Parameters:
+   > - channel: `discord.TextChannel` | `discord.Thread`
+   >    - The Channel to Export
+   > - messages: `List[discord.Message]`
+   >    - The Messages to Export
+   > - bot: Optional[`discord.Client`]
+   >    - The Bot Instance to Use for Fetching
+   > - military_time: Optional[`bool`]
+   >    - Whether to Use Military Time
+   > - attachment_handler: Optional[`AttachmentHandler`]
+   >    - The Attachment Handler to Use
+   >
+   >
+   > #### Returns:
+   > - Optional[`str`]
+   >    - The HTML of the Export
+   >
+   > #### Example:
+   > ```python
+   > import discord
+   > from discord.ext import commands
+   >
+   > import chat_exporter
+   > import io
+   >
+   > bot = commands.Bot(...)
+   >
+   > @bot.command()
+   > @commands.guild_only()
+   > async def export(ctx: commands.Context):
+   >    transcript = await chat_exporter.raw_export(
+   >        ctx.channel,
+   >        messages=[msg async for msg in ctx.channel.history(limit=None, oldest_first=True)],
+   >        bot=bot,
+   >    )
+   >    if transcript is None: # Failed to Create Transcript - Traceback is Printed to Console
+   >        return
+   >
+   >   await ctx.reply(
+   >       file=discord.File(
+   >           io.StringIO(transcript),
+   >           filename="transcript.html",
+   >       )
+   >   )
+   > ```
 </details>
 
-**Examples:**
+<br />
 
-<ol>
-<details><summary>AttachmentToLocalFileHostHandler</summary>
+### Handling Attachments:
+As Discord has Restricted their CDN so that Attachment Proxy-URLs are Temporary (hence the 'Broken'/Invalid Attachments in Transcripts), You have to Provide an `AttachmentHandler` to Resolve it.
 
-Assuming you have a file server running, which serves the content of the folder `/usr/share/assets/` 
-under `https://example.com/assets/`, you can easily use the `AttachmentToLocalFileHostHandler` like this:
-```python
-import io
-import discord
-from discord.ext import commands
-import chat_exporter
-from chat_exporter import AttachmentToLocalFileHostHandler
+If You Do Not Provide an `AttachmentHandler`, the Library will Use the Default (Temporary) Proxy-URLs.
 
-...
+<details>
+   <summary><b>Creating your Own <code>AttachmentHandler</code> (Recommended)</b></summary>
 
-# Establish the file handler
-file_handler = AttachmentToLocalFileHostHandler(
-    base_path="/usr/share/assets",
-    url_base="https://example.com/assets/",
-)
-
-@bot.command()
-async def save(ctx: commands.Context):
-    transcript = await chat_exporter.export(
-        ctx.channel,
-        attachment_handler=file_handler,
-    )
-
-    if transcript is None:
-        return
-
-    transcript_file = discord.File(
-        io.BytesIO(transcript.encode()),
-        filename=f"transcript-{ctx.channel.name}.html",
-    )
-
-    await ctx.send(file=transcript_file)
-
-```
+   > All Custom `AttachmentHandler` Classes Must Inherit from `AttachmentHandler` & Implement the `process_asset` Method.
+   >
+   > #### Methods:
+   > - `process_asset`:
+   >    - Parameters:
+   >       - attachment: `discord.Attachment`
+   >          - The Attachment to Process
+   >    - Returns:
+   >       - `discord.Attachment`
+   >          - The Attachment Object with Updated URLs
+   >
+   > #### Example:
+   > ```python
+   > class MyAttachmentHandler(chat_exporter.AttachmentHandler):
+   >     def __init__(self, *args, **kwargs) -> None:
+   >         ... # Your Initialisation Logic Here (If Any)
+   >
+   >     async def process_asset(self, attachment: discord.Attachment) -> discord.Attachment:
+   >         new_url = ...  # Your Upload Logic Here
+   >
+   >         attachment.url = new_url
+   >         attachment.proxy_url = new_url
+   >         return attachment # Return the Attachment Object with Updated URLs
+   >
+   > attachment_handler = MyAttachmentHandler(...)
+   >
+   > ...
+   >
+   > # In your Code:
+   > transcript = await chat_exporter.export(
+   >     ...,
+   >     attachment_handler=attachment_handler,
+   > )
+   > ```
 </details>
 
-<details><summary>AttachmentToDiscordChannel</summary>
+<details>
+   <summary><b>Storing Attachments Locally via <code>AttachmentToLocalFileHostHandler</code></b></summary>
 
-Assuming you want to store your attachments in a discord channel, you can use the `AttachmentToDiscordChannel`. 
-Please note that discord recent changes regarding content links will result in the attachments links being broken 
-after 24 hours. While this is therefor not a recommended way to store your attachments, it should give you a good 
-idea how to perform asynchronous storing of the attachments.
-
-```python
-import io
-import discord
-from discord.ext import commands
-import chat_exporter
-from chat_exporter import AttachmentToDiscordChannel
-
-...
-
-# Establish the file handler
-channel_handler = AttachmentToDiscordChannel(
-    channel=bot.get_channel(CHANNEL_ID),
-)
-
-@bot.command()
-async def save(ctx: commands.Context):
-    transcript = await chat_exporter.export(
-        ctx.channel,
-        attachment_handler=channel_handler,
-    )
-
-    if transcript is None:
-        return
-
-    transcript_file = discord.File(
-        io.BytesIO(transcript.encode()),
-        filename=f"transcript-{ctx.channel.name}.html",
-    )
-
-    await ctx.send(file=transcript_file)
-
-```
-</details>
-</ol>
-<p align="right">(<a href="#top">back to top</a>)</p>
-
----
-## Screenshots
-
-<details><summary><b>General</b></summary>
-<ol>
-    <details><summary>Discord</summary>
-    <img src="https://raw.githubusercontent.com/mahtoid/DiscordChatExporterPy/master/.screenshots/channel_output.png">
-    </details>
-    <details><summary>Chat-Exporter</summary>
-    <img src="https://raw.githubusercontent.com/mahtoid/DiscordChatExporterPy/master/.screenshots/html_output.png">
-    </details>
-</ol>
-</details>
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
----
-## Additional Functions
-
-
-<details><summary><b>Link Function</b></summary>
-Downloading exported chats can build up a bunch of unwanted files on your PC which can get annoying, additionally - not everyone wants to download content from Discord.
-
-Due to these pain, and many requests - I have built a fancy PHP script which will show the transcript file within a browser.<br/>
-<ol>
-<details><summary>quick_link</summary>
-Similar in design to `.quick_export()` this is a bit of a demo function to produce a link and to give you an embed.
-
-**Required Argument(s):**<br/>
-`channel`: `discord.TextChannel` object, whether `ctx.channel` or any channel you gather.<br/>
-`message`: The Discord message containing the transcript file
-
-**Return Argument:**<br/>
-`discord.Message`: The message _quick_link_ will send, containing the embed.
-
-**Example:**
-```python
-import chat_exporter
-
-...
-
-@bot.command()
-async def save(ctx: commands.Context):
-    message = await chat_exporter.quick_export(ctx.channel)
-    await chat_exporter.quick_link(ctx.channel, message)
-```
+   > This Class Stores the Attachments Locally on the File System & Provides a (Public) URL to Access it.
+   >
+   > #### Parameters:
+   > - base_path: `str`
+   >    - The Base Path to Store the Attachments
+   > - url_base: `str`
+   >    - The Base URL to Access the Attachments
+   >
+   > #### Example:
+   > ```python
+   > attachment_handler = chat_exporter.AttachmentToLocalFileHostHandler(
+   >     base_path="/usr/share/assets",
+   >     url_base="https://your-domain.com/assets/",
+   > )
+   >
+   > ...
+   >
+   > # In your Code:
+   > transcript = await chat_exporter.export(
+   >     ...,
+   >     attachment_handler=attachment_handler,
+   > )
+   > ```
 </details>
 
-<details><summary>link</summary>
-A simple function to return the link you will need to view the transcript online.
+<details>
+   <summary><b>Sending Attachments to a Discord Channel via <code>AttachmentToDiscordChannel</code> (NOT Recommended)</b></summary>
 
-**Required Argument(s):**<br/>
-`message`: The Discord message containing the transcript file
-
-**Return Argument:**<br/>
-`link`: The link to view the transcript file online
-
-**Example:**
-```python
-import io
-
-import chat_exporter
-
-...
-
-@bot.command()
-async def save(ctx: commands.Context):
-    transcript = await chat_exporter.export(ctx.channel)
-    
-    if transcript is None:
-        return
-
-    transcript_file = discord.File(
-        io.BytesIO(transcript.encode()),
-        filename=f"transcript-{ctx.channel.name}.html",
-    )
-
-    message = await ctx.send(file=transcript_file)
-    link = await chat_exporter.link(message)
-
-    await ctx.send("Click this link to view the transcript online: " + link)
-```
-</details>
-</ol>
-
-_Please note that the PHP script does NOT store any information.<br/>
-It simply makes a request to the given URL and echos (prints) the content for you to be able to view it._
-
+   > This Handler Sends the Attachments to a Discord Channel & Provides the New (but Still Temporary) Proxy-URLs to Access it.
+   >
+   > #### Parameters:
+   > - channel: `discord.TextChannel`
+   >    - The Channel to Store the Attachments
+   >
+   > #### Example:
+   > ```python
+   > attachment_handler = chat_exporter.AttachmentToDiscordChannel(
+   >     channel=bot.get_channel(...),
+   > )
+   >
+   > ...
+   >
+   > # In your Code:
+   > transcript = await chat_exporter.export(
+   >     ...,
+   >     attachment_handler=attachment_handler,
+   > )
+   > ```
 </details>
 
+<br />
 
+### Other Functions:
 
----
+<details>
+   <summary><b>Generating an Embed to Link the Transcript via <code>.quick_link()</code></b></summary>
+
+   > #### Parameters:
+   > - channel: `discord.TextChannel` | `discord.Thread`
+   >    - The Channel to Send the Link
+   > - message: `discord.Message`
+   >    - The Message to Get the Transcript From
+   >
+   > #### Returns:
+   > - `discord.Message`
+   >    - The Message of the Link
+   >
+   > #### Example:
+   > ```python
+   > @bot.command()
+   > @commands.guild_only()
+   > async def export(ctx: commands.Context):
+   >    output = await chat_exporter.quick_export(...)
+   >    if output is None: # Failed to Create Transcript - Traceback is Printed to Console
+   >        return
+   >
+   >    await chat_exporter.quick_link(ctx.channel, output)
+   > ```
+</details>
+
+<details>
+   <summary><b>Generating a Link to View the Transcript via <code>.link()</code></b></summary>
+
+   > #### Parameters:
+   > - message: `discord.Message`
+   >    - The Message to Get the Transcript From
+   >
+   > #### Returns:
+   > - `str`
+   >    - The URL of the Transcript
+   >
+   > #### Example:
+   > ```python
+   > @bot.command()
+   > @commands.guild_only()
+   > async def export(ctx: commands.Context):
+   >    output = await chat_exporter.quick_export(...)
+   >    if output is None: # Failed to Create Transcript - Traceback is Printed to Console
+   >        return
+   >
+   >    url = chat_exporter.link(output)
+   >    await ctx.reply(f"[View Transcript]({url})")
+   > ```
+</details>
+
+<br />
+
+## Contributing
+
+### Issues & Feature Requests:
+If You Found a Bug or Have a Feature Request, Please Open an [Issue](https://github.com/1337Syntax/DiscordChatExporterPy/issues 'Issues').
+
+### Pull Requests:
+If You Want to Contribute to the Project, Please Fork the Repository & Install the Development Requirements from `requirements/dev.txt`. Then when Ready, Open a [Pull Request](https://github.com/1337Syntax/DiscordChatExporterPy/pulls 'Pull Requests')!
+
+<br />
+
 ## Attributions
+This Package was Imported from the Original [DiscordChatExporterPy](https://github.com/mahtoid/DiscordChatExporterPy 'mahtoid/DiscordChatExporterPy').
 
-*This project borrows CSS and HTML code from [Tyrrrz's C# DiscordChatExporter](https://github.com/Tyrrrz/DiscordChatExporter/) repository.*
+<br />
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-<!-- LINK DUMP -->
-[pypi-version]: https://img.shields.io/pypi/v/chat-exporter?style=for-the-badge
-[pypi-url]: https://pypi.org/project/chat-exporter/
-[language-dom]: https://img.shields.io/github/languages/top/mahtoid/discordchatexporterpy?style=for-the-badge
-[forks-shield]: https://img.shields.io/github/forks/mahtoid/DiscordChatExporterPy?style=for-the-badge
-[forks-url]: https://github.com/mahtoid/DiscordChatExporterPy/
-[stars-shield]: https://img.shields.io/github/stars/mahtoid/DiscordChatExporterPy?style=for-the-badge
-[stars-url]: https://github.com/mahtoid/DiscordChatExporterPy/stargazers
-[issues-shield]: https://img.shields.io/github/issues/mahtoid/DiscordChatExporterPy?style=for-the-badge
-[issues-url]: https://github.com/mahtoid/DiscordChatExporterPy/issues
-[license-shield]: https://img.shields.io/github/license/mahtoid/DiscordChatExporterPy?style=for-the-badge
-[license-url]: https://github.com/mahtoid/DiscordChatExporterPy/blob/master/LICENSE
-[github-url]: https://github.com/mahtoid/DiscordChatExporterPy/
+## License
+This Project is Licensed Under the [GNU General Public License v3.0](/LICENSE 'License').
