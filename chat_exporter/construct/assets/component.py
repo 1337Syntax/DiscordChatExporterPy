@@ -1,116 +1,125 @@
-from chat_exporter.ext.discord_import import discord
+import discord
 
-from chat_exporter.ext.discord_utils import DiscordUtils
-from chat_exporter.ext.html_generator import (
-    fill_out,
+from typing import List
+
+from chat_exporter.ext import (
+    DiscordIcons,
+    ParseMode,
     component_button,
     component_menu,
     component_menu_options,
     component_menu_options_emoji,
-    PARSE_MODE_NONE,
-    PARSE_MODE_EMOJI,
-    PARSE_MODE_MARKDOWN,
+    fill_out,
 )
 
 
 class Component:
-    styles = {
-        "primary": "#5865F2",
-        "secondary": "#4F545C",
-        "success": "#2D7D46",
-        "danger": "#D83C3E",
-        "blurple": "#5865F2",
-        "grey": "#4F545C",
-        "gray": "#4F545C",
-        "green": "#2D7D46",
-        "red": "#D83C3E",
-        "link": "#4F545C",
+    """The Component Converter"""
+
+    STYLES = {
+        discord.ButtonStyle.primary: "#5865F2",
+        discord.ButtonStyle.secondary: "#4F545C",
+        discord.ButtonStyle.success: "#2D7D46",
+        discord.ButtonStyle.danger: "#D83C3E",
+        discord.ButtonStyle.blurple: "#5865F2",
+        discord.ButtonStyle.grey: "#4F545C",
+        discord.ButtonStyle.gray: "#4F545C",
+        discord.ButtonStyle.green: "#2D7D46",
+        discord.ButtonStyle.red: "#D83C3E",
+        discord.ButtonStyle.link: "#4F545C",
     }
+    MENU_DIV_ID = 0
 
-    components: str = ""
-    menus: str = ""
-    buttons: str = ""
-    menu_div_id: int = 0
+    @staticmethod
+    async def flow(guild: discord.Guild, *, component: discord.Component) -> str:
+        if isinstance(component, discord.ActionRow):
+            buttons = ""
+            menus = ""
 
-    def __init__(self, component, guild):
-        self.component = component
-        self.guild = guild
+            for c in component.children:
+                if isinstance(c, discord.Button):
+                    buttons += await Component.flow(guild, component=c)
+                elif isinstance(c, discord.SelectMenu):
+                    menus += await Component.flow(guild, component=c)
 
-    async def build_component(self, c):
-        if isinstance(c, discord.Button):
-            await self.build_button(c)
-        elif isinstance(c, discord.SelectMenu):
-            await self.build_menu(c)
-            Component.menu_div_id += 1
+            return f'<div class="chatlog__components">{buttons}{menus}</div>'
 
-    async def build_button(self, c):
-        if c.url:
-            url = str(c.url)
-            target = " target='_blank'"
-            icon = str(DiscordUtils.button_external_link)
-        else:
-            url = "javascript:;"
-            target = ""
-            icon = ""
-            
-        label = str(c.label) if c.label else ""
-        style = self.styles[str(c.style).split(".")[1]]
-        emoji = str(c.emoji) if c.emoji else ""
-
-        self.buttons += await fill_out(self.guild, component_button, [
-            ("DISABLED", "chatlog__component-disabled" if c.disabled else "", PARSE_MODE_NONE),
-            ("URL", url, PARSE_MODE_NONE),
-            ("LABEL", label, PARSE_MODE_MARKDOWN),
-            ("EMOJI", emoji, PARSE_MODE_EMOJI),
-            ("ICON", icon, PARSE_MODE_NONE),
-            ("TARGET", target, PARSE_MODE_NONE),
-            ("STYLE", style, PARSE_MODE_NONE)
-        ])
-
-    async def build_menu(self, c):
-        placeholder = c.placeholder if c.placeholder else ""
-        options = c.options
-        content = ""
-
-        if not c.disabled:
-            content = await self.build_menu_options(options)
-
-        self.menus += await fill_out(self.guild, component_menu, [
-            ("DISABLED", "chatlog__component-disabled" if c.disabled else "", PARSE_MODE_NONE),
-            ("ID", str(self.menu_div_id), PARSE_MODE_NONE),
-            ("PLACEHOLDER", str(placeholder), PARSE_MODE_MARKDOWN),
-            ("CONTENT", str(content), PARSE_MODE_NONE),
-            ("ICON", DiscordUtils.interaction_dropdown_icon, PARSE_MODE_NONE),
-        ])
-
-    async def build_menu_options(self, options):
-        content = []
-        for option in options:
-            if option.emoji:
-                content.append(await fill_out(self.guild, component_menu_options_emoji, [
-                    ("EMOJI", str(option.emoji), PARSE_MODE_EMOJI),
-                    ("TITLE", str(option.label), PARSE_MODE_MARKDOWN),
-                    ("DESCRIPTION", str(option.description) if option.description else "", PARSE_MODE_MARKDOWN)
-                ]))
+        elif isinstance(component, discord.Button):
+            if component.url:
+                url = component.url
+                target = "target='_blank'"
+                icon = DiscordIcons.button_external_link
             else:
-                content.append(await fill_out(self.guild, component_menu_options, [
-                    ("TITLE", str(option.label), PARSE_MODE_MARKDOWN),
-                    ("DESCRIPTION", str(option.description) if option.description else "", PARSE_MODE_MARKDOWN)
-                ]))
+                url = "javascript:;"
+                target = ""
+                icon = ""
 
-        if content:
-            content = f'<div id="dropdownMenu{self.menu_div_id}" class="dropdownContent">{"".join(content)}</div>'
+            disabled = "chatlog__component-disabled" if component.disabled else ""
+            label = component.label or ""
+            style = Component.STYLES[component.style]
+            emoji = str(component.emoji) if component.emoji else ""
 
-        return content
+            return await fill_out(
+                guild, component_button, [
+                    ("DISABLED", disabled, ParseMode.NONE),
+                    ("URL", url, ParseMode.NONE),
+                    ("LABEL", label, ParseMode.MARKDOWN),
+                    ("EMOJI", emoji, ParseMode.EMOJI),
+                    ("ICON", icon, ParseMode.NONE),
+                    ("TARGET", target, ParseMode.NONE),
+                    ("STYLE", style, ParseMode.NONE),
+                ],
+            )
 
-    async def flow(self):
-        for c in self.component.children:
-            await self.build_component(c)
+        elif isinstance(component, discord.SelectMenu):
+            Component.MENU_DIV_ID += 1
 
-        if self.menus:
-            self.components += f'<div class="chatlog__components">{self.menus}</div>'
+            disabled = "chatlog__component-disabled" if component.disabled else ""
+            placeholder = component.placeholder or ""
+            options = component.options
+            content = ""
 
-        if self.buttons:
-            self.components += f'<div class="chatlog__components">{self.buttons}</div>'
+            if not component.disabled:
+                contents: List[str] = []
+                for option in options:
+                    if option.emoji:
+                        contents.append(
+                            await fill_out(
+                                guild, component_menu_options_emoji, [
+                                    ("EMOJI", str(option.emoji), ParseMode.EMOJI),
+                                    ("TITLE", str(option.label), ParseMode.MARKDOWN),
+                                    (
+                                        "DESCRIPTION", str(option.description)
+                                        if option.description else "", ParseMode.MARKDOWN,
+                                    ),
+                                ],
+                            ),
+                        )
+                    else:
+                        contents.append(
+                            await fill_out(
+                                guild, component_menu_options, [
+                                    ("TITLE", str(option.label), ParseMode.MARKDOWN),
+                                    (
+                                        "DESCRIPTION", str(option.description)
+                                        if option.description else "", ParseMode.MARKDOWN,
+                                    ),
+                                ],
+                            ),
+                        )
 
-        return self.components
+                if contents:
+                    content = f'<div id="dropdownMenu{Component.MENU_DIV_ID}" class="dropdownContent">{"".join(contents)}</div>'
+
+            return await fill_out(
+                guild, component_menu, [
+                    ("ID", str(Component.MENU_DIV_ID), ParseMode.NONE),
+                    ("DISABLED", disabled, ParseMode.NONE),
+                    ("PLACEHOLDER", placeholder, ParseMode.MARKDOWN),
+                    ("CONTENT", content, ParseMode.NONE),
+                    ("ICON", DiscordIcons.interaction_dropdown_icon, ParseMode.NONE),
+                ],
+            )
+
+        else:
+            raise TypeError("Invalid Component Type")

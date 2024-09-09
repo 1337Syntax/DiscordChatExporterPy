@@ -1,62 +1,51 @@
-<!--
-This transcript was generated using: https://github.com/mahtoid/DiscordChatExporterPy
-If you have any issues or suggestions - open an issue on the Github Repository or alternatively join https://discord.mahto.id
-
-
-
--->
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="EN">
 
 <head>
-    <title>{{SERVER_NAME}} - {{CHANNEL_NAME}}</title>
+    <title>{{SERVER_NAME}}: #{{CHANNEL_NAME}}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width" />
-    <meta name="title" content="{{SERVER_NAME}} - {{CHANNEL_NAME}}">
-    <meta name="description" content="Transcript of channel {{CHANNEL_NAME}} ({{CHANNEL_ID}}) from {{SERVER_NAME}} ({{GUILD_ID}}) with {{MESSAGE_COUNT}} messages. This transcript was generated on {{DATE_TIME}}.">
-    <meta name="theme-color" content="#638dfc" />
+    <meta name="title" content="{{SERVER_NAME}}: #{{CHANNEL_NAME}}">
+    <meta name="description" content="Transcript of Discord {{CHANNEL_TYPE}} #{{CHANNEL_NAME}} ({{CHANNEL_ID}}) from {{SERVER_NAME}} ({{GUILD_ID}}). This was Generated on {{DATE_TIME}} with {{MESSAGE_COUNT}} Messages.">
+    <meta name="theme-color" content="#FFFFFF" />
 
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="{{SERVER_NAME}} - {{CHANNEL_NAME}}" />
-    <meta property="og:description" content="Transcript of channel {{CHANNEL_NAME}} ({{CHANNEL_ID}}) from {{SERVER_NAME}} ({{GUILD_ID}}) with {{MESSAGE_COUNT}} messages. This transcript was generated on {{DATE_TIME}}." />
+    <meta property="og:title" content="{{SERVER_NAME}}: #{{CHANNEL_NAME}}" />
+    <meta property="og:description" content="Transcript of Discord {{CHANNEL_TYPE}} #{{CHANNEL_NAME}} ({{CHANNEL_ID}}) from {{SERVER_NAME}} ({{GUILD_ID}}). This was Generated on {{DATE_TIME}} with {{MESSAGE_COUNT}} Messages." />
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary" />
-    <meta name='twitter:title' content="{{SERVER_NAME}} - {{CHANNEL_NAME}}" />
-    <meta name='twitter:description' content="Transcript of channel {{CHANNEL_NAME}} ({{CHANNEL_ID}}) from {{SERVER_NAME}} ({{GUILD_ID}}) with {{MESSAGE_COUNT}} messages. This transcript was generated on {{DATE_TIME}}." />
-
+    <meta name='twitter:title' content="{{SERVER_NAME}}: #{{CHANNEL_NAME}}" />
+    <meta name='twitter:description' content="Transcript of Discord {{CHANNEL_TYPE}} #{{CHANNEL_NAME}} ({{CHANNEL_ID}}) from {{SERVER_NAME}} ({{GUILD_ID}}). This was Generated on {{DATE_TIME}} with {{MESSAGE_COUNT}} Messages." />
 
     <style>
         @font-face {
-          font-family: gg sans;
-          font-weight: 400;
-          src: url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/ggsans-400.woff2) format("woff2")
+            font-family: gg sans;
+            font-weight: 400;
+            src: url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/ggsans-400.woff2) format("woff2")
         }
 
         @font-face {
-          font-family: gg sans;
-          font-weight: 500;
-          src: url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/ggsans-500.woff2) format("woff2")
+            font-family: gg sans;
+            font-weight: 500;
+            src: url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/ggsans-500.woff2) format("woff2")
         }
 
         @font-face {
-          font-family: gg sans;
-          font-weight: 600;
-          src: url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/ggsans-600.woff2) format("woff2")
+            font-family: gg sans;
+            font-weight: 600;
+            src: url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/ggsans-600.woff2) format("woff2")
         }
 
         @font-face {
-          font-family: gg sans;
-          font-weight: 700;
-          src: url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/ggsans-700.woff2) format("woff2")
+            font-family: gg sans;
+            font-weight: 700;
+            src: url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/ggsans-700.woff2) format("woff2")
         }
 
         @font-face {
-          font-family: gg sans;
-          font-weight: 800;
-          src: url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/ggsans-800.woff2) format("woff2")
+            font-family: gg sans;
+            font-weight: 800;
+            src: url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/ggsans-800.woff2) format("woff2")
         }
 
         a {
@@ -69,6 +58,18 @@ If you have any issues or suggestions - open an issue on the Github Repository o
 
         img {
             object-fit: contain;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            background-color: rgba(0, 0, 0, 0);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #202225;
+            border: 0 #36393f solid;
+            border-left-width: 1px;
+            border-right-width: 1px;
         }
 
         .chatlog__markdown {
@@ -126,20 +127,20 @@ If you have any issues or suggestions - open an issue on the Github Repository o
             filter: blur(44px);
         }
 
-            .spoiler--hidden .spoiler-image:after {
-                content: "SPOILER";
-                color: #dcddde;
-                background-color: rgba(0, 0, 0, 0.6);
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                font-weight: 600;
-                padding: 100%;
-                border-radius: 20px;
-                letter-spacing: 0.05em;
-                font-size: 0.9em;
-            }
+        .spoiler--hidden .spoiler-image:after {
+            content: "SPOILER";
+            color: #dcddde;
+            background-color: rgba(0, 0, 0, 0.6);
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 600;
+            padding: 100%;
+            border-radius: 20px;
+            letter-spacing: 0.05em;
+            font-size: 0.9em;
+        }
 
         .spoiler--hidden:hover .spoiler-image:after {
             color: #fff;
@@ -190,6 +191,7 @@ If you have any issues or suggestions - open an issue on the Github Repository o
 
         .mention:hover {
             background: rgba(88, 101, 242, .6);
+            cursor: pointer;
         }
 
         .emoji {
@@ -208,8 +210,6 @@ If you have any issues or suggestions - open an issue on the Github Repository o
             width: 2.8em;
             height: 2.8em;
         }
-
-        /* Chatlog */
 
         .chatlog {
             padding: 1rem 5px 0.125rem 2px;
@@ -332,7 +332,7 @@ If you have any issues or suggestions - open an issue on the Github Repository o
         .chatlog__interaction-link:hover *:not(.chatlog__markdown-spoiler) {
             color: inherit;
         }
-        
+
         .chatlog__reference-edited-timestamp {
             margin-left: 0.25rem;
             color: #9599a2;
@@ -362,6 +362,11 @@ If you have any issues or suggestions - open an issue on the Github Repository o
         .chatlog__thread-name {
             color: white;
             font-weight: 600;
+        }
+
+        .chatlog__thread-name:hover {
+            text-decoration: underline;
+            cursor: pointer;
         }
 
         .chatlog__author-name {
@@ -529,20 +534,19 @@ If you have any issues or suggestions - open an issue on the Github Repository o
         .chatlog__embed-fields {
             display: flex;
             flex-wrap: wrap;
+            gap: 10px;
         }
 
         .chatlog__embed-field {
-            flex: 0;
-            min-width: 100%;
-            max-width: 506px;
+            flex: 0 0 100%;
             padding-top: 0.6em;
             font-size: 0.875em;
         }
 
         .chatlog__embed-field--inline {
-            flex: 1;
-            flex-basis: auto;
-            min-width: 150px;
+            flex: 1 1 calc(33.33% - 10px);
+
+            box-sizing: border-box;
         }
 
         .chatlog__embed-field-name {
@@ -613,11 +617,11 @@ If you have any issues or suggestions - open an issue on the Github Repository o
             font-weight: 500;
         }
 
-        .chatlog__button-label > * {
+        .chatlog__button-label>* {
             padding-left: 2.5px;
             padding-right: 2.5px;
         }
-        
+
         .chatlog__reactions {
             display: flex;
         }
@@ -637,7 +641,7 @@ If you have any issues or suggestions - open an issue on the Github Repository o
             font-size: 0.875em;
         }
 
-        .chatlog__bot-tag {
+        .chatlog__app-tag {
             background: #5865f2;
             color: #ffffff;
             padding: 0 0.2rem;
@@ -654,12 +658,12 @@ If you have any issues or suggestions - open an issue on the Github Repository o
             line-height: 15px;
         }
 
-        .chatlog__bot-tag-verified {
+        .chatlog__app-tag-verified {
             width: 16px;
             margin-left: -3px;
         }
 
-        .chatlog__followup .chatlog__bot-tag {
+        .chatlog__followup .chatlog__app-tag {
             margin-right: 0.3rem;
             margin-top: 0;
         }
@@ -695,11 +699,9 @@ If you have any issues or suggestions - open an issue on the Github Repository o
         }
 
 
-        .meta__details .chatlog__bot-tag {
+        .meta__details .chatlog__app-tag {
             margin-left: 1ch;
         }
-
-        /* Postamble */
 
         .postamble {
             margin: 1.4em 0.3em 0.6em 0.3em;
@@ -707,9 +709,8 @@ If you have any issues or suggestions - open an issue on the Github Repository o
             border-top: 1px solid;
         }
 
-        /* General */
-
-        html, body {
+        html,
+        body {
             height: 100%;
             width: 100%;
             background-color: #36393f;
@@ -749,8 +750,6 @@ If you have any issues or suggestions - open an issue on the Github Repository o
             border-color: #282b30 !important;
             color: #b9bbbe !important;
         }
-
-        /* Chatlog */
 
         .chatlog__message-group {
             margin-bottom: 1rem;
@@ -849,8 +848,6 @@ If you have any issues or suggestions - open an issue on the Github Repository o
             color: rgba(255, 255, 255, 0.3);
         }
 
-        /* === INFO === */
-
         .panel {
             display: flex;
             flex-shrink: 0;
@@ -901,11 +898,6 @@ If you have any issues or suggestions - open an issue on the Github Repository o
             cursor: pointer;
         }
 
-        .summary-popout.visible {
-            transform: scale(1);
-            transition: transform 200ms ease-in-out;
-        }
-
         .summary-popout {
             position: absolute;
             z-index: 6969;
@@ -920,24 +912,16 @@ If you have any issues or suggestions - open an issue on the Github Repository o
             transform-origin: top right;
         }
 
+        .summary-popout.visible {
+            transform: scale(1);
+            transition: transform 200ms ease-in-out;
+        }
+
         .main {
             display: flex;
             overflow-y: auto;
             height: calc(100% - 126px);
             flex-direction: column;
-        }
-
-        .main::-webkit-scrollbar {
-          width: 8px;
-          background-color: rgba(0,0,0,0);
-        }
-
-        /* Add a thumb */
-        .main::-webkit-scrollbar-thumb {
-          background-color: #202225;
-          border: 0 #36393f solid;
-          border-left-width: 1px;
-          border-right-width: 1px;
         }
 
         .buffer {
@@ -1053,7 +1037,7 @@ If you have any issues or suggestions - open an issue on the Github Repository o
 
         .meta-popout.mounted {
             transform: scale(1);
-            transition: transform .3 ease-in-out;;
+            transition: transform .3 ease-in-out;
         }
 
         .meta__divider {
@@ -1159,53 +1143,54 @@ If you have any issues or suggestions - open an issue on the Github Repository o
         }
 
         .dropdownButton {
-          width: 100%;
-          color: #6E767D;
-          padding: 11.5px;
-          font-size: 15px;
-          cursor: pointer;
-          text-align: left;
-          border-radius: 5px;
-          background-color: #2F3136;
-          border: 1px solid #202225;
+            width: 100%;
+            color: #6E767D;
+            padding: 11.5px;
+            font-size: 15px;
+            cursor: pointer;
+            text-align: left;
+            border-radius: 5px;
+            background-color: #2F3136;
+            border: 1px solid #202225;
         }
 
         .chatlog__component-disabled {
-          cursor: not-allowed;
-          opacity: 0.6;
+            cursor: not-allowed;
+            opacity: 0.6;
         }
 
         .chatlog__component-disabled a {
-          cursor: not-allowed;
+            cursor: not-allowed;
         }
 
         .chatlog__component-disabled button {
-          cursor: not-allowed;
+            cursor: not-allowed;
         }
 
         .chatlog__component-dropdown {
-          width: 400px;
-          margin-top: 5px;
-          position: relative;
-          display: inline-block;
+            width: 400px;
+            margin-top: 5px;
+            position: relative;
+            display: inline-block;
         }
 
         .chatlog__dropdown-content {
-          position: relative;
+            position: relative;
+            height: 2rem;
         }
 
         .chatlog__dropdown-emoji {
-          left: 10px;
-          position: absolute;
+            left: 10px;
+            position: absolute;
         }
 
         .chatlog__dropdown-emoji img {
-          width: 1.4em;
-          height: 1.4em;
+            width: 1.4em;
+            height: 1.4em;
         }
 
         .chatlog__dropdown-text {
-          padding-left: 25px
+            padding-left: 25px
         }
 
         .chatlog__role-icon {
@@ -1216,44 +1201,44 @@ If you have any issues or suggestions - open an issue on the Github Repository o
         }
 
         .dropdownContent {
-          z-index: 1;
-          display: none;
-          width: 99.5%;
-          font-size: 14px;
-          position: absolute;
-          margin-top: -0.7px;
-          background-color: #2F3136;
-          border: 1px solid #202225;
-          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            display: none;
+            width: 99.5%;
+            font-size: 14px;
+            position: absolute;
+            margin-top: -0.7px;
+            background-color: #2F3136;
+            border: 1px solid #202225;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         }
 
         .dropdownContentEmoji {
-          width: 25px;
-          position: absolute;
+            width: 25px;
+            position: absolute;
         }
 
         .dropdownContentTitle {
-          color: white;
-          font-weight: 600;
+            color: white;
+            font-weight: 600;
         }
 
         .dropdownContent a {
-          display: block;
-          padding: 12px 16px;
-          text-decoration: none;
+            display: block;
+            padding: 12px 16px;
+            text-decoration: none;
         }
 
         .chatlog__dropdown-icon {
-          right: 0px;
-          width: 25px;
-          margin-top: -12px;
-          position: absolute;
-          padding-right: 4px;
+            right: 0px;
+            width: 25px;
+            margin-top: -0.25rem;
+            position: absolute;
+            padding-right: 4px;
         }
 
         .chatlog__component-dropdown-border {
-          border-bottom-left-radius: 0px;
-          border-bottom-right-radius: 0px;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
         }
 
         .tippy-box[data-theme~='disc'] {
@@ -1262,52 +1247,147 @@ If you have any issues or suggestions - open an issue on the Github Repository o
             color: #dfe0e4;
         }
 
-        .tippy-box[data-theme~='disc'][data-placement^='top'] > .tippy-arrow::before {
-          border-top-color: #111214;
+        .tippy-box[data-theme~='disc'][data-placement^='top']>.tippy-arrow::before {
+            border-top-color: #111214;
         }
 
-        .tippy-box[data-theme~='disc'][data-placement^='left'] > .tippy-arrow::before {
-          border-left-color: #111214;
+        .tippy-box[data-theme~='disc'][data-placement^='left']>.tippy-arrow::before {
+            border-left-color: #111214;
         }
 
-        .tippy-box[data-theme~='disc'][data-placement^='bottom'] > .tippy-arrow::before {
-          border-bottom-color: #111214;
+        .tippy-box[data-theme~='disc'][data-placement^='bottom']>.tippy-arrow::before {
+            border-bottom-color: #111214;
         }
 
-        .tippy-box[data-theme~='disc'][data-placement^='right'] > .tippy-arrow::before {
-          border-right-color: #111214;
+        .tippy-box[data-theme~='disc'][data-placement^='right']>.tippy-arrow::before {
+            border-right-color: #111214;
         }
 
-        .dropdownContentDesc { color: #999B9E; }
-        .dropdownButton:hover { border: 1px solid #040405; }
-        .chatlog__component-dropdown-show { display: block; }
-        .chatlog__component-dropdown a:hover { background-color: #292B2F; }
+        .dropdownContentDesc {
+            color: #999B9E;
+        }
 
-        .cursor_pointer { cursor: pointer; }
+        .dropdownButton:hover {
+            border: 1px solid #040405;
+        }
 
+        .chatlog__component-dropdown-show {
+            display: block;
+            min-height: 100%;
+            max-height: 17.5rem;
+            overflow-y: auto;
+        }
+
+        .chatlog__component-dropdown a:hover {
+            background-color: #292B2F;
+        }
+
+        .cursor_pointer {
+            cursor: pointer;
+        }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-    <script src="https://unpkg.com/@popperjs/core@2.11.5/dist/umd/popper.min.js"></script>
-    <script src="https://unpkg.com/tippy.js@6.3.7/dist/tippy-bundle.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/timezone.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.5/plugin/customParseFormat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.5/plugin/isToday.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.5/plugin/isTomorrow.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.5/plugin/isBetween.js"></script>
+</head>
+
+<body>
+    <div class="panel">
+        <img class="panel__hashtag-icon" src="{{CHANNEL_ICON}}" />
+        <span>{{CHANNEL_NAME}}</span>
+        {{CHANNEL_TOPIC}}
+        <div class="panel__summary-button" id="summary-button">
+            <span>Summary</span>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="buffer"></div>
+
+        <div class="info">
+            <span class="info__title">Welcome to #{{CHANNEL_NAME}}!</span>
+            {{SUBJECT}}
+        </div>
+
+        <div class="chatlog">
+            {{MESSAGES}}
+        </div>
+    </div>
+
+    <div class="footer">
+        <span class="footer__text">
+            This Transcript was Generated on <span id="footer__date" data-timestamp="{{DATE_TIME}}"></span> - All Times are Shown Locally (<span id="footer__timezone"></span>).
+        </span>
+    </div>
+
+    <div id="context-menu">
+        <div class="item">Copy Message ID</div>
+    </div>
+
+    <div id="summary-popout" class="summary-popout">
+        <div class="meta__header">
+            <img src="{{SERVER_AVATAR_URL}}" alt="Avatar">
+        </div>
+        <div class="meta__description">
+            <div class="meta__details">
+                <div class="meta__user">{{SERVER_NAME}}</div>
+            </div>
+            <div class="meta__field">
+                <div class="meta__title">Guild ID</div>
+                <div class="meta__value">{{GUILD_ID}}</div>
+            </div>
+            <div class="meta__field">
+                <div class="meta__title">{{CHANNEL_TYPE}} ID</div>
+                <div class="meta__value">{{CHANNEL_ID}}</div>
+            </div>
+            <div class="meta__field">
+                <div class="meta__title">{{CHANNEL_TYPE}} Creation Date</div>
+                <div class="meta__value" id="meta__channel_created_at">{{CHANNEL_CREATED_AT}}</div>
+            </div>
+            <div class="meta__field">
+                <div class="meta__title">Total Message Count</div>
+                <div class="meta__value">{{MESSAGE_COUNT}}</div>
+            </div>
+            <div class="meta__field">
+                <div class="meta__title">Total Message Participants</div>
+                <div class="meta__value">{{MESSAGE_PARTICIPANTS}}</div>
+            </div>
+        </div>
+    </div>
+    {{META_DATA}}
+
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/github-dark-dimmed.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/advancedFormat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/bigIntSupport.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/customParseFormat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/isBetween.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/isMoment.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/isToday.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/isTomorrow.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/isYesterday.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/localizedFormat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/relativeTime.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/timezone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/updateLocale.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/utc.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.11/plugin/weekday.js"></script>
 
     <script>
-        <!--  Scroll to Message (References)  -->
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.pre--multiline').forEach((element) => {
+                hljs.highlightElement(element);
+            });
+        });
+
         function scrollToMessage(event, id) {
             var element = document.getElementById('chatlog__message-container-' + id);
-
             if (element !== null && element !== undefined) {
                 event.preventDefault();
 
                 element.classList.add('chatlog__message-container--highlighted');
-
                 element.scrollIntoView({
                     behavior: 'smooth',
                     block: 'center',
@@ -1316,283 +1396,350 @@ If you have any issues or suggestions - open an issue on the Github Repository o
                 setTimeout(function() {
                     element.classList.remove('chatlog__message-container--highlighted');
                 }, 1500);
-            }
-        }
+            };
+        };
 
-        <!--  Spoiler (|| Spoiler ||)  -->
         function showSpoiler(event, element) {
             if (element && element.classList.contains('spoiler--hidden')) {
                 event.preventDefault();
+
                 element.classList.remove('spoiler--hidden');
-            }
-        }
+            };
+        };
 
-        <!--  Menu Dropdown (Selectmenu)  -->
         function showDropdown(dropdownID) {
-          <!--    If you are reading this and can improve the JS logic, let me know!-->
-          document.getElementById("dropdownButton" + dropdownID).classList.toggle("chatlog__component-dropdown-border");
-          document.getElementById("dropdownMenuContent" + dropdownID).classList.toggle("chatlog__component-dropdown-show");
-          document.getElementById("dropdownMenu" + dropdownID).classList.toggle("chatlog__component-dropdown-show");
+            document.getElementById("dropdownButton" + dropdownID).classList.toggle("chatlog__component-dropdown-border");
+            document.getElementById("dropdownMenuContent" + dropdownID).classList.toggle("chatlog__component-dropdown-show");
+            document.getElementById("dropdownMenu" + dropdownID).classList.toggle("chatlog__component-dropdown-show");
+        };
+
+        let messageID = "";
+        let metaPopout = undefined;
+
+        const summaryPopout = document.getElementById('summary-popout');
+        const contextMenu = document.getElementById("context-menu");
+        const scope = document.querySelector("body");
+        const messages = document.getElementsByClassName("chatlog__message-container");
+
+        const normalisePosition = (mouseX, mouseY, type) => {
+            if (type == "context") {
+                maxWidth = contextMenu.clientWidth;
+                maxHeight = contextMenu.clientHeight;
+            } else if (type == "user") {
+                maxWidth = metaPopout.clientWidth;
+                maxHeight = metaPopout.clientHeight;
+            };
+
+            let {
+                left: scopeOffsetX,
+                top: scopeOffsetY,
+            } = scope.getBoundingClientRect();
+            scopeOffsetX = scopeOffsetX < 0 ? 0 : scopeOffsetX;
+            scopeOffsetY = scopeOffsetY < 0 ? 0 : scopeOffsetY;
+
+            const scopeX = mouseX - scopeOffsetX;
+            const scopeY = mouseY - scopeOffsetY;
+            const outOfBoundsOnX = scopeX + maxWidth > scope.clientWidth;
+            const outOfBoundsOnY = scopeY + maxHeight > scope.clientHeight;
+
+            let normalizedX = mouseX;
+            let normalizedY = mouseY;
+
+            if (outOfBoundsOnX) {
+                normalizedX = scopeOffsetX + scope.clientWidth - maxWidth;
+            };
+            if (outOfBoundsOnY) {
+                normalizedY = scopeOffsetY + scope.clientHeight - maxHeight;
+            };
+
+            return { normalizedX, normalizedY };
+        };
+
+        scope.addEventListener("contextmenu", (e) => {
+            event.preventDefault();
+
+            if (e.target.offsetParent != contextMenu) {
+                contextMenu.classList.remove("visible");
+            };
+        });
+
+        var openContextMenu = function() {
+            const { clientX: mouseX, clientY: mouseY } = event;
+            const { normalizedX, normalizedY } = normalisePosition(mouseX, mouseY, "context");
+
+            contextMenu.classList.remove("visible");
+            contextMenu.style.left = `${normalizedX}px`;
+            contextMenu.style.top = `${normalizedY}px`;
+
+            setTimeout(function() {
+                contextMenu.classList.add("visible");
+            });
+            messageID = this.getAttribute("data-message-id");
         }
 
-        <!--  Code Block Markdown (```lang```) -->
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.pre--multiline').forEach((block) => {
-                hljs.highlightBlock(block);
-            });
+        for (var i = 0; i < messages.length; i++) {
+            messages[i].addEventListener("contextmenu", openContextMenu);
+        };
+        scope.addEventListener("click", (e) => {
+            if (e.target.offsetParent != contextMenu) {
+                contextMenu.classList.remove("visible");
+            } else {
+                navigator.clipboard.writeText(messageID)
+                contextMenu.classList.remove("visible");
+            };
+
+            if (metaPopout && e.target.offsetParent != metaPopout) {
+                metaPopout.classList.remove("mounted");
+            };
+
+            if (e.target.offsetParent != summaryPopout) {
+                summaryPopout.classList.remove("visible");
+            };
+        });
+
+        mainScroll = document.querySelector('.main');
+        mainScroll.addEventListener('scroll', (e) => {
+            if (e.target.offsetParent != contextMenu) {
+                contextMenu.classList.remove("visible");
+            } else {
+                navigator.clipboard.writeText(messageID)
+                contextMenu.classList.remove("visible");
+            };
+
+            if (metaPopout && e.target.offsetParent != metaPopout) {
+                metaPopout.classList.remove("mounted");
+            };
+        });
+
+        window.onload = function() {
+            var author_name = document.getElementsByClassName('chatlog__author-name');
+            var followup_author = document.getElementsByClassName('chatlog__followup-author');
+            var followup_avatar = document.getElementsByClassName("chatlog__followup-avatar");
+            var avatar = document.getElementsByClassName("chatlog__avatar");
+
+            const element_select = [...author_name, ...followup_author, ...followup_avatar, ...avatar];
+
+            for (var i = 0; i < element_select.length; i++) {
+                var element = element_select[i];
+                element.onclick = function() {
+                    authorID = this.getAttribute("data-user-id");
+                    if (metaPopout) {
+                        metaPopout.classList.remove('mounted');
+                    };
+
+                    metaPopout = document.getElementById('meta-popout-' + authorID);
+
+                    const subtractX = document.querySelector('.main').scrollLeft;
+                    const subtractY = document.querySelector('.main').scrollTop;
+
+                    const elementX = this.offsetLeft + this.offsetWidth + 10 - subtractX;
+                    const elementY = this.offsetTop - subtractY;
+
+                    const { normalizedX, normalizedY } = normalisePosition(elementX, elementY, "user");
+
+                    metaPopout.style.left = `${normalizedX}px`;
+                    metaPopout.style.top = `${normalizedY}px`;
+
+                    setTimeout(function() {
+                        metaPopout.classList.add("mounted")
+                    });
+                };
+            };
+
+            var summaryButton = document.getElementById('summary-button');
+            summaryButton.onclick = function() {
+                const elementX = this.offsetLeft - 150;
+                const elementY = this.offsetTop + 50;
+
+                if (summaryPopout.classList.contains("visible")) {
+                    summaryPopout.classList.remove("visible");
+                } else {
+                    summaryPopout.style.left = `${elementX}px`;
+                    summaryPopout.style.top = `${elementY}px`;
+
+                    setTimeout(function() {
+                        summaryPopout.classList.add("visible");
+                    });
+                };
+            };
+        };
+
+        dayjs.extend(window.dayjs_plugin_advancedFormat);
+        dayjs.extend(window.dayjs_plugin_bigIntSupport);
+        dayjs.extend(window.dayjs_plugin_customParseFormat);
+        dayjs.extend(window.dayjs_plugin_isBetween);
+        dayjs.extend(window.dayjs_plugin_isMoment);
+        dayjs.extend(window.dayjs_plugin_isToday);
+        dayjs.extend(window.dayjs_plugin_isTomorrow);
+        dayjs.extend(window.dayjs_plugin_isYesterday);
+        dayjs.extend(window.dayjs_plugin_localizedFormat);
+        dayjs.extend(window.dayjs_plugin_relativeTime);
+        dayjs.extend(window.dayjs_plugin_timezone);
+        dayjs.extend(window.dayjs_plugin_updateLocale);
+        dayjs.extend(window.dayjs_plugin_utc);
+        dayjs.extend(window.dayjs_plugin_weekday);
+
+        dayjs.updateLocale('en', {
+            relativeTime: {
+                future: 'in %s',
+                past: '%s ago',
+                s: 'a few seconds',
+                ss: '%d seconds',
+                m: 'a minute',
+                mm: '%d minutes',
+                h: 'an hour',
+                hh: '%d hours',
+                d: 'a day',
+                dd: '%d days',
+                M: 'a month',
+                MM: '%d months',
+                y: 'a year',
+                yy: '%d years'
+            },
+            thresholds: [
+                { l: 's', r: 44, d: 'second' },
+                { l: 'ss', r: 59, d: 'second' },
+                { l: 'm', r: 1.44, d: 'minute' },
+                { l: 'mm', r: 59, d: 'minute' },
+                { l: 'h', r: 1.44, d: 'hour' },
+                { l: 'hh', r: 23, d: 'hour' },
+                { l: 'd', r: 1.44, d: 'day' },
+                { l: 'dd', r: 29, d: 'day' },
+                { l: 'M', r: 1.44, d: 'month' },
+                { l: 'MM', r: 11, d: 'month' },
+                { l: 'y', r: 1.44, d: 'year' },
+                { l: 'yy', d: 'year' }
+            ]
+        });
+
+        const metaChannelCreatedAt = document.getElementById('meta__channel_created_at');
+        const channelCreatedAt = dayjs.utc(metaChannelCreatedAt.innerText).local();
+        metaChannelCreatedAt.innerText = channelCreatedAt.format("dddd, D MMMM YYYY {{TIME_FORMAT}}");
+
+        var metaTimeStamps = document.querySelectorAll('.meta__value span');
+        for (var i = 0; i < metaTimeStamps.length; i++) {
+            const date = dayjs.utc(metaTimeStamps[i].getAttribute('data-timestamp').trim()).local();
+            if (date.isValid()) {
+                metaTimeStamps[i].innerText = date.format('MMM DD, YYYY');
+            } else {
+                metaTimeStamps[i].innerText = "Unknown";
+            };
+        };
+
+        var embedTimestamps = document.querySelectorAll('.chatlog__embed-footer-text span');
+        for (var i = 0; i < embedTimestamps.length; i++) {
+            const date = dayjs.utc(embedTimestamps[i].getAttribute('data-timestamp').trim()).local();
+            if (date.isTomorrow()) { // YOU ARE IN THE FUTURE !?
+                embedTimestamps[i].innerText = "Tomorrow at " + date.format('{{TIME_FORMAT}}');
+            } else if (date.isToday()) {
+                embedTimestamps[i].innerText = "Today at " + date.format('{{TIME_FORMAT}}');
+            } else if (date.isYesterday()) {
+                embedTimestamps[i].innerText = "Yesterday at " + date.format('{{TIME_FORMAT}}');
+            } else {
+                embedTimestamps[i].innerText = date.format("DD/MM/YYYY {{TIME_FORMAT}}");
+            };
+        };
+
+        var timeStamps = document.getElementsByClassName('chatlog__timestamp');
+        for (var i = 0; i < timeStamps.length; i++) {
+            const date = dayjs.utc(timeStamps[i].getAttribute('data-timestamp').trim()).local();
+            if (date.isTomorrow()) { // YOU ARE IN THE FUTURE !?
+                timeStamps[i].innerText = "Tomorrow at " + date.format('{{TIME_FORMAT}}');
+            } else if (date.isToday()) {
+                timeStamps[i].innerText = "Today at " + date.format('{{TIME_FORMAT}}');
+            } else if (date.isYesterday()) {
+                timeStamps[i].innerText = "Yesterday at " + date.format('{{TIME_FORMAT}}');
+            } else {
+                timeStamps[i].innerText = date.format("DD/MM/YYYY {{TIME_FORMAT}}");
+            };
+        };
+
+        var timeStamps = document.getElementsByClassName('chatlog__short-timestamp');
+        for (var i = 0; i < timeStamps.length; i++) {
+            const date = dayjs.utc(timeStamps[i].getAttribute('data-timestamp').trim()).local();
+            timeStamps[i].innerText = date.format('{{TIME_FORMAT}}');
+        };
+
+        var timeStamps = document.getElementsByClassName('unix-timestamp');
+        for (var i = 0; i < timeStamps.length; i++) {
+            const date = dayjs.utc(timeStamps[i].getAttribute('data-timestamp').trim()).local();
+            const key = timeStamps[i].getAttribute('data-timestamp-format').trim();
+
+            if (key == "t") {
+                timeStamps[i].innerText = date.format("{{TIME_FORMAT}}");
+            } else if (key == "T") {
+                const militaryTime = "{{TIME_FORMAT}}".slice(-1) == "A"
+                timeStamps[i].innerText = date.format(militaryTime ? "HH:mm:ss" : "hh:mm:ss A");
+            } else if (key == "d") {
+                timeStamps[i].innerText = date.format("DD/MM/YYYY");
+            } else if (key == "D") {
+                timeStamps[i].innerText = date.format("D MMMM YYYY");
+            } else if (key == "f") {
+                timeStamps[i].innerText = date.format("D MMMM YYYY {{TIME_FORMAT}}");
+            } else if (key == "F") {
+                timeStamps[i].innerText = date.format("dddd, D MMMM YYYY {{TIME_FORMAT}}");
+            } else if (key == "R") {
+                timeStamps[i].innerText = date.fromNow();
+            } else {
+                timeStamps[i].innerText = date.format("D MMMM YYYY {{TIME_FORMAT}}");
+            };
+        };
+
+        var footerTime = document.getElementById('footer__date');
+        const date = dayjs.utc(footerTime.getAttribute('data-timestamp').trim()).local();
+        footerTime.innerText = date.format("dddd, D MMMM YYYY {{TIME_FORMAT}}");
+
+        const footerTimezone = document.getElementById('footer__timezone');
+        const localTimezone = dayjs.tz.guess();
+        const formatter = new Intl.DateTimeFormat('en-GB', {
+            timeZone: localTimezone,
+            timeZoneName: 'short'
+        });
+        footerTimezone.innerText = formatter.formatToParts(
+            dayjs().tz(localTimezone).toDate()
+        ).find(part => part.type === 'timeZoneName').value;
+
+        tippy('.chatlog__timestamp', {
+            placement: 'top',
+            animation: 'fade',
+            content: (reference) => {
+                const date = dayjs.utc(reference.getAttribute('data-timestamp').trim()).local();
+                return date.format("dddd, D MMMM YYYY {{TIME_FORMAT}}");
+            },
+            theme: 'disc',
+        });
+
+        tippy('.chatlog__short-timestamp', {
+            placement: 'top',
+            animation: 'fade',
+            content: (reference) => {
+                const date = dayjs.utc(reference.getAttribute('data-timestamp').trim()).local();
+                return date.format("dddd, D MMMM YYYY {{TIME_FORMAT}}");
+            },
+            theme: 'disc',
+        });
+
+        tippy('.chatlog__reference-edited-timestamp', {
+            placement: 'top',
+            animation: 'fade',
+            content: (reference) => {
+                const date = dayjs.utc(reference.getAttribute('data-timestamp').trim()).local();
+                return date.format("dddd, D MMMM YYYY {{TIME_FORMAT}}");
+            },
+            theme: 'disc',
+        });
+
+        tippy('.unix-timestamp', {
+            placement: 'top',
+            animation: 'fade',
+            content: (reference) => {
+                const date = dayjs.utc(reference.getAttribute('data-timestamp').trim()).local();
+                return date.format("dddd, D MMMM YYYY {{TIME_FORMAT}}");
+            },
+            theme: 'disc',
         });
     </script>
-</head>
-<body>
-
-<div class="panel">
-    <img class="panel__hashtag-icon" src="https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/discord-hashtag.svg"/>
-    <span>{{CHANNEL_NAME}}</span>
-
-    {{CHANNEL_TOPIC}}
-
-    <div class="panel__summary-button" id="summary-button">
-        <span>Summary</span>
-    </div>
-</div>
-
-<div class="main">
-    <div class="buffer">
-        <!-- Magical space goes here -->
-    </div>
-
-    <div class="info">
-        <span class="info__title">Welcome to #{{CHANNEL_NAME}}!</span>
-        {{SUBJECT}}
-    </div>
-
-    <div class="chatlog">
-        {{MESSAGES}}
-    </div>
-</div>
-
-<div class="footer">
-    <span class="footer__text">This transcript was generated on {{DATE_TIME}}</span>
-</div>
-
-<div id="context-menu">
-    <div class="item">Copy Message ID</div>
-</div>
-
-<div id="summary-popout" class="summary-popout">
-    <div class="meta__header">
-         <img src="{{SERVER_AVATAR_URL}}" alt="Avatar">
-    </div>
-    <div class="meta__description">
-        <div class="meta__details">
-            <div class="meta__user">{{SERVER_NAME}}</div>
-        </div>
-        <div class="meta__field">
-            <div class="meta__title">Guild ID</div>
-            <div class="meta__value">{{GUILD_ID}}</div>
-        </div>
-        <div class="meta__field">
-            <div class="meta__title">Channel ID</div>
-            <div class="meta__value">{{CHANNEL_ID}}</div>
-        </div>
-        <div class="meta__field">
-            <div class="meta__title">Channel Creation Date</div>
-            <div class="meta__value">{{CHANNEL_CREATED_AT}}</div>
-        </div>
-        <div class="meta__field">
-            <div class="meta__title">Total Message Count</div>
-            <div class="meta__value">{{MESSAGE_COUNT}}</div>
-        </div>
-        <div class="meta__field">
-            <div class="meta__title">Total Message Participants</div>
-            <div class="meta__value">{{MESSAGE_PARTICIPANTS}}</div>
-        </div>
-        {{SD}}
-    </div>
-</div>
-{{META_DATA}}
-
-<script>
-    <!-- Right Click - Copy ID -->
-    let metaPopout = undefined
-    const contextMenu = document.getElementById("context-menu");
-    const scope = document.querySelector("body");
-    const messages = document.getElementsByClassName("chatlog__message-container")
-    let messageID = ""
-    const normalisePosition = (mouseX, mouseY, type) => {
-        if (type == "context") {
-            maxWidth = contextMenu.clientWidth
-            maxHeight = contextMenu.clientHeight
-        } else if (type == "user") {
-            maxWidth = metaPopout.clientWidth
-            maxHeight = metaPopout.clientHeight
-        }
-
-        let {
-            left: scopeOffsetX,
-            top: scopeOffsetY,
-        } = scope.getBoundingClientRect()
-        scopeOffsetX = scopeOffsetX < 0 ? 0 : scopeOffsetX;
-        scopeOffsetY = scopeOffsetY < 0 ? 0 : scopeOffsetY
-        const scopeX = mouseX - scopeOffsetX;
-        const scopeY = mouseY - scopeOffsetY
-
-        const outOfBoundsOnX = scopeX + maxWidth > scope.clientWidth
-        const outOfBoundsOnY = scopeY + maxHeight > scope.clientHeight
-        let normalizedX = mouseX;
-        let normalizedY = mouseY
-
-        if (outOfBoundsOnX) {
-            normalizedX = scopeOffsetX + scope.clientWidth - maxWidth;
-        }
-
-        if (outOfBoundsOnY) {
-            normalizedY = scopeOffsetY + scope.clientHeight - maxHeight;
-        }
-
-        return { normalizedX, normalizedY };
-    }
-
-    scope.addEventListener("contextmenu", (e) => {
-        event.preventDefault()
-        if (e.target.offsetParent != contextMenu) {
-          contextMenu.classList.remove("visible");
-        }
-    })
-
-    var openContextMenu = function() {
-        const { clientX: mouseX, clientY: mouseY } = event
-        const { normalizedX, normalizedY } = normalisePosition(mouseX, mouseY, "context")
-
-        contextMenu.classList.remove("visible")
-        contextMenu.style.left = `${normalizedX}px`;
-        contextMenu.style.top = `${normalizedY}px`
-
-        setTimeout(() => {
-            contextMenu.classList.add("visible");
-        })
-        messageID = this.getAttribute("data-message-id");
-    }
-
-    for (var i = 0; i < messages.length; i++) {
-        messages[i].addEventListener("contextmenu", openContextMenu)
-    }
-
-    scope.addEventListener("click", (e) => {
-        if (e.target.offsetParent != contextMenu) {
-          contextMenu.classList.remove("visible");
-        } else {
-            navigator.clipboard.writeText(messageID)
-            contextMenu.classList.remove("visible");
-        }
-
-        if (metaPopout && e.target.offsetParent != metaPopout) {
-            metaPopout.classList.remove("mounted")
-        }
-
-        if (e.target.offsetParent != summaryPopout) {
-            summaryPopout.classList.remove("visible")
-        }
-    })
-
-    mainScroll = document.querySelector('.main')
-    mainScroll.addEventListener('scroll', (e) => {
-        if (e.target.offsetParent != contextMenu) {
-            contextMenu.classList.remove("visible");
-        } else {
-            navigator.clipboard.writeText(messageID)
-            contextMenu.classList.remove("visible");
-        }
-
-        if (metaPopout && e.target.offsetParent != metaPopout) {
-            metaPopout.classList.remove("mounted")
-        }
-    });
-
-    <!-- User Dialog -->
-    const summaryPopout = document.getElementById('summary-popout')
-
-    window.onload = function() {
-        var author_name = document.getElementsByClassName('chatlog__author-name');
-        var followup_author =document.getElementsByClassName('chatlog__followup-author');
-        var followup_avatar = document.getElementsByClassName("chatlog__followup-avatar");
-        var avatar = document.getElementsByClassName("chatlog__avatar");
-        const element_select = [...author_name, ...followup_author, ...followup_avatar, ...avatar]
-
-        for(var i = 0; i < element_select.length; i++) {
-            var element = element_select[i];
-            element.onclick = function() {
-                authorID = this.getAttribute("data-user-id");
-
-                if (metaPopout) {
-                    metaPopout.classList.remove('mounted');
-                }
-
-                metaPopout = document.getElementById('meta-popout-' + authorID);
-
-                const subtractX = document.querySelector('.main').scrollLeft
-                const subtractY = document.querySelector('.main').scrollTop
-
-                const elementX = this.offsetLeft + this.offsetWidth + 10 - subtractX
-                const elementY = this.offsetTop - subtractY
-
-                const { normalizedX, normalizedY } = normalisePosition(elementX, elementY, "user")
-
-                metaPopout.style.left = `${normalizedX}px`;
-                metaPopout.style.top = `${normalizedY}px`;
-
-                setTimeout(() => {
-                    metaPopout.classList.add("mounted")
-                });
-            }
-        }
-
-        var summaryButton = document.getElementById('summary-button');
-        summaryButton.onclick = function() {
-            const elementX = this.offsetLeft - 110
-            const elementY = this.offsetTop + 30
-
-            summaryPopout.style.left = `${elementX}px`;
-            summaryPopout.style.top = `${elementY}px`;
-
-            setTimeout(() => {
-                summaryPopout.classList.add("visible")
-            });
-        }
-    }
-
-    <!-- Timestamps: Tooltips -->
-    tippy('.chatlog__timestamp', {
-        placement: 'top',
-        animation: 'fade',
-        content: (reference) => reference.getAttribute('data-timestamp'),
-        theme: 'disc',
-    });
-
-    tippy('.chatlog__short-timestamp', {
-        placement: 'top',
-        animation: 'fade',
-        content: (reference) => reference.getAttribute('data-timestamp'),
-        theme: 'disc',
-    });
-
-    tippy('.chatlog__reference-edited-timestamp', {
-        placement: 'top',
-        animation: 'fade',
-        content: (reference) => reference.getAttribute('data-timestamp'),
-        theme: 'disc',
-    });
-
-    <!-- Timestamps: Tooltips -->
-    tippy('.unix-timestamp', {
-        placement: 'top',
-        animation: 'fade',
-        content: (reference) => reference.getAttribute('data-timestamp'),
-        theme: 'disc',
-    });
-
-    {{FANCY_TIME}}
-</script>
 
 </body>
+
 </html>

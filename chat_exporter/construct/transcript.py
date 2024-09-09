@@ -1,192 +1,206 @@
-import datetime
+import discord
+
 import html
-import traceback
-
-import re
-from typing import List, Optional
-
 import pytz
+import re
+import traceback
+from datetime import datetime
 
-from chat_exporter.construct.attachment_handler import AttachmentHandler
-from chat_exporter.ext.discord_import import discord
+from typing import Any, Dict, List, Optional, Union
 
-from chat_exporter.construct.message import gather_messages
-from chat_exporter.construct.assets.component import Component
-
-from chat_exporter.ext.cache import clear_cache
-from chat_exporter.parse.mention import pass_bot
-from chat_exporter.ext.discord_utils import DiscordUtils
-from chat_exporter.ext.html_generator import (
-    fill_out, total, channel_topic, meta_data_temp, fancy_time, channel_subject, PARSE_MODE_NONE
+from chat_exporter.construct import AttachmentHandler, Component, gather_messages
+from chat_exporter.ext import (
+    DiscordIcons,
+    ParseMode,
+    channel_subject,
+    channel_topic,
+    clear_cache,
+    fill_out,
+    meta_data_temp,
+    total,
 )
+from chat_exporter.parse import ParseMarkdown, pass_bot
 
 
 class TranscriptDAO:
+    """The Transcript Data Access Object"""
+
     html: str
 
     def __init__(
         self,
-        channel: discord.TextChannel,
+        channel: Union[discord.TextChannel, discord.Thread],
         limit: Optional[int],
         messages: Optional[List[discord.Message]],
-        pytz_timezone,
         military_time: bool,
-        fancy_times: bool,
-        before: Optional[datetime.datetime],
-        after: Optional[datetime.datetime],
-        support_dev: bool,
+        before: Optional[datetime],
+        after: Optional[datetime],
         bot: Optional[discord.Client],
-        attachment_handler: Optional[AttachmentHandler],
+        attachment_handler: Optional[Any],
     ):
         self.channel = channel
         self.messages = messages
-        self.limit = int(limit) if limit else None
+        self.limit = limit
         self.military_time = military_time
-        self.fancy_times = fancy_times
         self.before = before
         self.after = after
-        self.support_dev = support_dev
-        self.pytz_timezone = pytz_timezone
-        self.attachment_handler = attachment_handler
 
-        # This is to pass timezone in to mention.py without rewriting
-        setattr(discord.Guild, "timezone", self.pytz_timezone)
+        if attachment_handler and not isinstance(attachment_handler, AttachmentHandler):
+            raise TypeError(
+                "'attachment_handler' Must be an Instance of AttachmentHandler",
+            )
+        self.attachment_handler = attachment_handler
 
         if bot:
             pass_bot(bot)
 
+    @property
+    def time_format(self) -> str:
+        return "%A, %d %B %Y %H:%M" if self.military_time else "%A, %d %B %Y %I:%M %p"
+
     async def build_transcript(self):
+        assert self.messages is not None
+
         message_html, meta_data = await gather_messages(
             self.messages,
             self.channel.guild,
-            self.pytz_timezone,
             self.military_time,
-            self.attachment_handler
+            self.attachment_handler,
         )
         await self.export_transcript(message_html, meta_data)
         clear_cache()
-        Component.menu_div_id = 0
+        Component.MENU_DIV_ID = 0
+        ParseMarkdown.CODE_BLOCK_CONTENT = {}
         return self
 
-    async def export_transcript(self, message_html: str, meta_data: str):
+    async def export_transcript(self, message_html: str, meta_data: Dict[int, List[Any]]) -> None:
+        assert self.messages is not None
+
         guild_icon = self.channel.guild.icon if (
-                self.channel.guild.icon and len(self.channel.guild.icon) > 2
-        ) else DiscordUtils.default_avatar
+            self.channel.guild.icon and len(self.channel.guild.icon) > 2
+        ) else DiscordIcons.default_avatar
 
         guild_name = html.escape(self.channel.guild.name)
 
-        timezone = pytz.timezone(self.pytz_timezone)
-        if self.military_time:
-            time_now = datetime.datetime.now(timezone).strftime("%e %B %Y at %H:%M:%S (%Z)")
-        else:
-            time_now = datetime.datetime.now(timezone).strftime("%e %B %Y at %I:%M:%S %p (%Z)")
-
         meta_data_html: str = ""
         for data in meta_data:
-            creation_time = meta_data[int(data)][1].astimezone(timezone).strftime("%b %d, %Y")
-            joined_time = (
-                meta_data[int(data)][5].astimezone(timezone).strftime("%b %d, %Y")
-                if meta_data[int(data)][5] else "Unknown"
+            creation_time: str = meta_data[int(data)][1].isoformat()
+            joined_time: str = (
+                meta_data[int(data)][5].isoformat()
+                if meta_data[int(data)][5] else ""
             )
 
             pattern = r'^#\d{4}'
             discrim = str(meta_data[int(data)][0][-5:])
             user = str(meta_data[int(data)][0])
 
-            meta_data_html += await fill_out(self.channel.guild, meta_data_temp, [
-                ("USER_ID", str(data), PARSE_MODE_NONE),
-                ("USERNAME", user[:-5] if re.match(pattern, discrim) else user, PARSE_MODE_NONE),
-                ("DISCRIMINATOR", discrim if re.match(pattern, discrim) else ""),
-                ("BOT", str(meta_data[int(data)][2]), PARSE_MODE_NONE),
-                ("CREATED_AT", str(creation_time), PARSE_MODE_NONE),
-                ("JOINED_AT", str(joined_time), PARSE_MODE_NONE),
-                ("GUILD_ICON", str(guild_icon), PARSE_MODE_NONE),
-                ("DISCORD_ICON", str(DiscordUtils.logo), PARSE_MODE_NONE),
-                ("MEMBER_ID", str(data), PARSE_MODE_NONE),
-                ("USER_AVATAR", str(meta_data[int(data)][3]), PARSE_MODE_NONE),
-                ("DISPLAY", str(meta_data[int(data)][6]), PARSE_MODE_NONE),
-                ("MESSAGE_COUNT", str(meta_data[int(data)][4]))
-            ])
+            meta_data_html += await fill_out(
+                self.channel.guild, meta_data_temp, [
+                    ("USER_ID", str(data), ParseMode.NONE),
+                    (
+                        "USERNAME", user[:-5] if re.match(pattern, discrim)
+                        else user, ParseMode.NONE,
+                    ),
+                    ("DISCRIMINATOR", discrim if re.match(pattern, discrim) else ""),
+                    ("BOT", str(meta_data[int(data)][2]), ParseMode.NONE),
+                    ("CREATED_AT", str(creation_time), ParseMode.NONE),
+                    ("JOINED_AT", str(joined_time), ParseMode.NONE),
+                    ("GUILD_ICON", str(guild_icon), ParseMode.NONE),
+                    ("DISCORD_ICON", str(DiscordIcons.logo), ParseMode.NONE),
+                    ("MEMBER_ID", str(data), ParseMode.NONE),
+                    ("USER_AVATAR", str(meta_data[int(data)][3]), ParseMode.NONE),
+                    ("DISPLAY", str(meta_data[int(data)][6]), ParseMode.NONE),
+                    ("MESSAGE_COUNT", str(meta_data[int(data)][4])),
+                ],
+            )
 
-        if self.military_time:
-            channel_creation_time = self.channel.created_at.astimezone(timezone).strftime("%b %d, %Y (%H:%M:%S)")
-        else:
-            channel_creation_time = self.channel.created_at.astimezone(timezone).strftime("%b %d, %Y (%I:%M:%S %p)")
+        channel_creation_time = self.channel.created_at.isoformat()  # type: ignore
 
         raw_channel_topic = (
-            self.channel.topic if isinstance(self.channel, discord.TextChannel) and self.channel.topic else ""
+            self.channel.topic
+            if isinstance(self.channel, discord.TextChannel) and self.channel.topic else ""
         )
 
         channel_topic_html = ""
         if raw_channel_topic:
-            channel_topic_html = await fill_out(self.channel.guild, channel_topic, [
-                ("CHANNEL_TOPIC", html.escape(raw_channel_topic))
-            ])
+            channel_topic_html = await fill_out(
+                self.channel.guild, channel_topic, [
+                    ("CHANNEL_TOPIC", html.escape(raw_channel_topic)),
+                ],
+            )
 
         limit = "start"
         if self.limit:
             limit = f"latest {self.limit} messages"
 
-        subject = await fill_out(self.channel.guild, channel_subject, [
-            ("LIMIT", limit, PARSE_MODE_NONE),
-            ("CHANNEL_NAME", self.channel.name),
-            ("RAW_CHANNEL_TOPIC", str(raw_channel_topic))
-        ])
+        subject = await fill_out(
+            self.channel.guild, channel_subject, [
+                ("LIMIT", limit, ParseMode.NONE),
+                ("CHANNEL_NAME", self.channel.name),
+                (
+                    "CHANNEL_TYPE", "Thread" if isinstance(
+                        self.channel,
+                        discord.Thread,
+                    ) else "Channel", ParseMode.NONE,
+                ),
+            ],
+        )
 
-        sd = (
-            '<div class="meta__support">'
-            '    <a href="https://ko-fi.com/mahtoid">DONATE</a>'
-            '</div>'
-        ) if self.support_dev else ""
+        if self.military_time:
+            time_format = "HH:mm"
+        else:
+            time_format = "hh:mm A"
 
-        _fancy_time = ""
+        if isinstance(self.channel, discord.Thread):
+            channel_icon = DiscordIcons.thread_channel_icon
+        else:
+            channel_icon = DiscordIcons.channel_icon
 
-        if self.fancy_times:
-            if self.military_time:
-                time_format = "HH:mm"
-            else:
-                time_format = "hh:mm A"
-
-            _fancy_time = await fill_out(self.channel.guild, fancy_time, [
-                ("TIME_FORMAT", time_format, PARSE_MODE_NONE),
-                ("TIMEZONE", str(self.pytz_timezone), PARSE_MODE_NONE)
-            ])
-
-        self.html = await fill_out(self.channel.guild, total, [
-            ("SERVER_NAME", f"{guild_name}"),
-            ("GUILD_ID", str(self.channel.guild.id), PARSE_MODE_NONE),
-            ("SERVER_AVATAR_URL", str(guild_icon), PARSE_MODE_NONE),
-            ("CHANNEL_NAME", f"{self.channel.name}"),
-            ("MESSAGE_COUNT", str(len(self.messages))),
-            ("MESSAGES", message_html, PARSE_MODE_NONE),
-            ("META_DATA", meta_data_html, PARSE_MODE_NONE),
-            ("DATE_TIME", str(time_now)),
-            ("SUBJECT", subject, PARSE_MODE_NONE),
-            ("CHANNEL_CREATED_AT", str(channel_creation_time), PARSE_MODE_NONE),
-            ("CHANNEL_TOPIC", str(channel_topic_html), PARSE_MODE_NONE),
-            ("CHANNEL_ID", str(self.channel.id), PARSE_MODE_NONE),
-            ("MESSAGE_PARTICIPANTS", str(len(meta_data)), PARSE_MODE_NONE),
-            ("FANCY_TIME", _fancy_time, PARSE_MODE_NONE),
-            ("SD", sd, PARSE_MODE_NONE)
-        ])
+        self.html = await fill_out(
+            self.channel.guild, total, [
+                ("SERVER_NAME", f"{guild_name}"),
+                ("GUILD_ID", str(self.channel.guild.id), ParseMode.NONE),
+                ("SERVER_AVATAR_URL", str(guild_icon), ParseMode.NONE),
+                ("CHANNEL_NAME", f"{self.channel.name}"),
+                ("MESSAGE_COUNT", str(len(self.messages))),
+                ("MESSAGES", message_html, ParseMode.NONE),
+                ("META_DATA", meta_data_html, ParseMode.NONE),
+                ("DATE_TIME", datetime.now(pytz.timezone("UTC")).isoformat(), ParseMode.NONE),
+                ("SUBJECT", subject, ParseMode.NONE),
+                ("CHANNEL_CREATED_AT", str(channel_creation_time), ParseMode.NONE),
+                ("CHANNEL_TOPIC", str(channel_topic_html), ParseMode.NONE),
+                ("CHANNEL_ID", str(self.channel.id), ParseMode.NONE),
+                ("CHANNEL_ICON", channel_icon, ParseMode.NONE),
+                (
+                    "CHANNEL_TYPE", "Thread" if isinstance(
+                        self.channel,
+                        discord.Thread,
+                    ) else "Channel", ParseMode.NONE,
+                ),
+                ("MESSAGE_PARTICIPANTS", str(len(meta_data)), ParseMode.NONE),
+                ("TIME_FORMAT", time_format, ParseMode.NONE),
+            ],
+            finalise=True,
+        )
 
 
 class Transcript(TranscriptDAO):
-    async def export(self):
-        if not self.messages:
-            self.messages = [message async for message in self.channel.history(
-                limit=self.limit,
-                before=self.before,
-                after=self.after,
-            )]
+    """The Transcript Builder"""
 
-        if not self.after:
-            self.messages.reverse()
+    async def export(self) -> Optional[TranscriptDAO]:
+        if not self.messages:
+            self.messages = [
+                message async for message in self.channel.history(
+                    limit=self.limit,
+                    before=self.before,
+                    after=self.after,
+                    oldest_first=True if self.after is None else False,
+                )
+            ]
 
         try:
             return await super().build_transcript()
         except Exception:
-            self.html = "Whoops! Something went wrong..."
             traceback.print_exc()
-            print("Please send a screenshot of the above error to https://www.github.com/mahtoid/DiscordChatExporterPy")
-            return self
+            print("An Un-Expected Error has Occurred!\nPlease Create a Bug Report & Send the Above Here: https://github.com/1337Syntax/DiscordChatExporterPy/issues")
+            return None
