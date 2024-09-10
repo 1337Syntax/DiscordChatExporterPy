@@ -95,7 +95,7 @@ class Embed:
         ) if embed.thumbnail and embed.thumbnail.url else ""
 
         if embed.timestamp:
-            timestamp = f'{html.escape("•")} <span data-timestamp="{embed.timestamp.isoformat()}""></span>'
+            timestamp = f'<span data-timestamp="{embed.timestamp.isoformat()}""></span>'
         else:
             timestamp = ""
 
@@ -103,6 +103,9 @@ class Embed:
             embed.footer.text,
         ) if embed.footer and embed.footer.text else ""
         footer_icon = embed.footer.icon_url if embed.footer and embed.footer.icon_url else None
+
+        if footer and timestamp:
+            footer = footer + f" {html.escape('•')}  "
         if footer or timestamp:
             if footer_icon:
                 footer = await fill_out(
