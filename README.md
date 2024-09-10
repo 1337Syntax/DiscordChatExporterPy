@@ -42,7 +42,7 @@ There are 3 Methods Available to Export the Channel:
    <summary><b>Basic Usage via <code>.quick_export()</code></b></summary>
 
    > #### Parameters:
-   > - channel: `discord.TextChannel` | `discord.Thread`
+   > - channel: `discord.abc.Messageable`
    >    - The Channel to Export
    > - bot: Optional[`discord.Client`]
    >    - The Bot Instance to Use for Fetching
@@ -72,7 +72,7 @@ There are 3 Methods Available to Export the Channel:
    <summary><b>Custom Usage via <code>.export()</code></b></summary>
 
    > #### Parameters:
-   > - channel: `discord.TextChannel` | `discord.Thread`
+   > - channel: `discord.abc.Messageable`
    >    - The Channel to Export
    > - limit: Optional[`int`]
    >    - The Limit of Messages to Capture
@@ -126,7 +126,7 @@ There are 3 Methods Available to Export the Channel:
    <summary><b>Advanced Usage via <code>.raw_export()</code></b></summary>
 
    > #### Parameters:
-   > - channel: `discord.TextChannel` | `discord.Thread`
+   > - channel: `discord.abc.Messageable`
    >    - The Channel to Export
    > - messages: `List[discord.Message]`
    >    - The Messages to Export
@@ -252,7 +252,7 @@ If You Do Not Provide an `AttachmentHandler`, the Library will Use the Default (
    > This Handler Sends the Attachments to a Discord Channel & Provides the New (but Still Temporary) Proxy-URLs to Access it.
    >
    > #### Parameters:
-   > - channel: `discord.TextChannel`
+   > - channel: `discord.ab.Messageable`
    >    - The Channel to Store the Attachments
    >
    > #### Example:
@@ -279,7 +279,7 @@ If You Do Not Provide an `AttachmentHandler`, the Library will Use the Default (
    <summary><b>Generating an Embed to Link the Transcript via <code>.quick_link()</code></b></summary>
 
    > #### Parameters:
-   > - channel: `discord.TextChannel` | `discord.Thread`
+   > - channel: `discord.abc.Messageable`
    >    - The Channel to Send the Link
    > - message: `discord.Message`
    >    - The Message to Get the Transcript From

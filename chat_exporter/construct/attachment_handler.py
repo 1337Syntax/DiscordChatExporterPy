@@ -67,11 +67,11 @@ class AttachmentToLocalFileHostHandler(AttachmentHandler):
 class AttachmentToDiscordChannelHandler(AttachmentHandler):
     """Save the Attachment to a Discord Channel"""
 
-    def __init__(self, channel: discord.TextChannel):
+    def __init__(self, channel: discord.abc.Messageable) -> None:
         """
         Parameters
         ----------
-        channel: :class:`discord.TextChannel`
+        channel: :class:`discord.abc.Messageable`
             The Channel to Save the Attachments
         """
 
