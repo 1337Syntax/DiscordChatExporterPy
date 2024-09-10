@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "DiscordChatExporterPy"
+name = "chat_exporter"
 keywords = ["chat exporter", "discord chat exporter", "discord", "discordpy"]
 description = "A Python Package to Export Discord Chat Logs to HTML-Transcripts"
 readme = "README.md"
