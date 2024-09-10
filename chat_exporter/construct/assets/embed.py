@@ -2,6 +2,8 @@ import discord
 
 import html
 
+from typing import Optional
+
 from chat_exporter.ext import (
     ParseMode,
     embed_author,
@@ -23,7 +25,7 @@ class Embed:
     """The Embed Converter"""
 
     @staticmethod
-    async def flow(guild: discord.Guild, *, embed: discord.Embed) -> str:
+    async def flow(guild: Optional[discord.Guild], *, embed: discord.Embed) -> str:
         if embed.colour:
             r, g, b = embed.colour.to_rgb()
         else:

@@ -14,7 +14,7 @@ from chat_exporter.construct import (
 
 
 async def quick_export(
-    channel: Union[discord.TextChannel, discord.Thread],
+    channel: discord.abc.Messageable,
     bot: Optional[discord.Client] = None,
 ) -> Optional[discord.Message]:
     """
@@ -22,7 +22,7 @@ async def quick_export(
 
     Parameters
     ----------
-    channel: Union[:class:`discord.TextChannel` | :class:`discord.Thread`]
+    channel: :class:`discord.abc.Messageable`
         The Channel to Export
     bot: Optional[:class:`discord.Client`]
         The Bot Instance to Use for Fetching
@@ -48,15 +48,20 @@ async def quick_export(
     if not transcript:
         return
 
+    if isinstance(channel, (discord.Thread, discord.abc.GuildChannel)):
+        channel_name = channel.name
+    else:
+        channel_name = str(channel.id)  # type: ignore
+
     transcript_embed = discord.Embed(
-        description=f"**Transcript Name:** transcript-{channel.name}\n\n",
+        description=f"**Transcript Name:** transcript-{channel_name}\n\n",
         colour=discord.Colour.blurple(),
     )
 
     transcript_file = discord.File(
         io.BytesIO(
             transcript.html.encode(),
-        ), filename=f"transcript-{channel.name}.html",
+        ), filename=f"transcript-{channel_name}.html",
     )
     return await channel.send(embed=transcript_embed, file=transcript_file)
 

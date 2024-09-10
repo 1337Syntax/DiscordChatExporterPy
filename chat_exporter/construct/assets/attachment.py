@@ -2,6 +2,8 @@ import discord
 
 import math
 
+from typing import Optional
+
 from chat_exporter.ext import (
     DiscordIcons,
     ParseMode,
@@ -55,7 +57,7 @@ class Attachment:
     """The Attachment Converter"""
 
     @staticmethod
-    async def flow(guild: discord.Guild, *, attachment: discord.Attachment) -> str:
+    async def flow(guild: Optional[discord.Guild], *, attachment: discord.Attachment) -> str:
         if attachment.content_type is not None:
             if "image" in attachment.content_type:
                 return await fill_out(
