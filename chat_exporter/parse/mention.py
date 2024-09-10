@@ -6,7 +6,7 @@ from datetime import datetime
 
 from typing import Optional
 
-from chat_exporter.parse import ParseMarkdown
+from ..parse import ParseMarkdown
 
 bot: Optional[discord.Client] = None
 

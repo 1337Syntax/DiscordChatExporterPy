@@ -2,7 +2,7 @@ import discord
 
 from typing import List, Optional
 
-from chat_exporter.ext import (
+from ...ext import (
     DiscordIcons,
     ParseMode,
     component_button,

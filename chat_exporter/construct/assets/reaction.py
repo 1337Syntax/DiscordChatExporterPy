@@ -2,7 +2,7 @@ import discord
 
 from typing import Optional
 
-from chat_exporter.ext import ParseMode, convert_emoji, custom_emoji, emoji, fill_out
+from ...ext import ParseMode, convert_emoji, custom_emoji, emoji, fill_out
 
 
 class Reaction:

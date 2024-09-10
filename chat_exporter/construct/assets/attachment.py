@@ -4,7 +4,7 @@ import math
 
 from typing import Optional
 
-from chat_exporter.ext import (
+from ...ext import (
     DiscordIcons,
     ParseMode,
     audio_attachment,

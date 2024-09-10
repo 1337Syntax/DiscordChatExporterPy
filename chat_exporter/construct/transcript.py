@@ -8,8 +8,8 @@ from datetime import datetime
 
 from typing import Any, Dict, List, Optional
 
-from chat_exporter.construct import AttachmentHandler, Component, gather_messages
-from chat_exporter.ext import (
+from ..construct import AttachmentHandler, Component, gather_messages
+from ..ext import (
     DiscordIcons,
     ParseMode,
     channel_subject,
@@ -19,7 +19,7 @@ from chat_exporter.ext import (
     meta_data_temp,
     total,
 )
-from chat_exporter.parse import ParseMarkdown, pass_bot
+from ..parse import ParseMarkdown, pass_bot
 
 
 class TranscriptDAO:

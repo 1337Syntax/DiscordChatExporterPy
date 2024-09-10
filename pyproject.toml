@@ -34,11 +34,6 @@ dynamic = ["version", "dependencies"]
 [project.urls]
 GitHub = "https://github.com/1337Syntax/DiscordChatExporterPy"
 
-[tool.setuptools]
-packages = [
-    "chat_exporter",
-]
-
 [tool.setuptools.dynamic]
 dependencies = { file = "requirements/_.txt" }
 

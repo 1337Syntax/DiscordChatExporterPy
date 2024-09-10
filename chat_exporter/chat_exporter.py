@@ -5,7 +5,7 @@ import io
 
 from typing import List, Optional, Union
 
-from chat_exporter.construct import (
+from .construct import (
     AttachmentHandler,
     AttachmentToDiscordChannelHandler,
     AttachmentToLocalFileHostHandler,

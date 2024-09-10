@@ -5,14 +5,8 @@ from datetime import timedelta
 
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from chat_exporter.construct import (
-    Attachment,
-    AttachmentHandler,
-    Component,
-    Embed,
-    Reaction,
-)
-from chat_exporter.ext import (
+from ..construct import Attachment, AttachmentHandler, Component, Embed, Reaction
+from ..ext import (
     DiscordIcons,
     ParseMode,
     app_tag,

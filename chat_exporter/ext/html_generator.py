@@ -5,7 +5,7 @@ from enum import Enum
 
 from typing import List, Optional, Tuple, Union
 
-from chat_exporter.parse import ParseMarkdown, ParseMention
+from ..parse import ParseMarkdown, ParseMention
 
 dir_path = os.path.abspath(
     os.path.join(

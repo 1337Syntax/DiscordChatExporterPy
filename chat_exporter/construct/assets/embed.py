@@ -4,7 +4,7 @@ import html
 
 from typing import Optional
 
-from chat_exporter.ext import (
+from ...ext import (
     ParseMode,
     embed_author,
     embed_author_icon,
