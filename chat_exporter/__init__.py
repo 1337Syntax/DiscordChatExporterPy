@@ -9,4 +9,4 @@ from .chat_exporter import (
     raw_export,
 )
 
-__version__ = "2.9.1"
+__version__ = "2.9.2"
