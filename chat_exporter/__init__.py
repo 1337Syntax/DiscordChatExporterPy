@@ -1,4 +1,4 @@
-from chat_exporter.chat_exporter import (
+from .chat_exporter import (
     AttachmentHandler,
     AttachmentToDiscordChannelHandler,
     AttachmentToLocalFileHostHandler,
