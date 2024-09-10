@@ -100,13 +100,18 @@ class ParseMention:
         for regex in (ParseMention.REGEX_MEMBERS, ParseMention.REGEX_MEMBERS_2):
             match = re.search(regex, content)
             while match is not None:
+                member_id = int(match.group(1))
                 if guild:
-                    member_id = int(match.group(1))
                     member = guild.get_member(member_id)
-                    if not member and bot:
-                        member = bot.get_user(member_id) or await bot.fetch_user(member_id)
                 else:
                     member = None
+
+                if (not member) and (bot):
+                    try:
+                        member = bot.get_user(member_id) or await bot.fetch_user(member_id)
+                    except discord.HTTPException:
+                        pass
+
                 member_name = member.display_name if member else str(member_id)
 
                 replacement = f'<span class="mention" title="{member_id}">@{member_name}</span>'
