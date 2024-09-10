@@ -3,7 +3,7 @@ import discord
 import datetime
 import io
 
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from .construct import (
     AttachmentHandler,
