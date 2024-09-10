@@ -1,0 +1,2 @@
+-r _.txt
+discord.py==2.4.*
