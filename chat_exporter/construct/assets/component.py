@@ -1,8 +1,8 @@
 import discord
 
-from typing import List
+from typing import List, Optional
 
-from chat_exporter.ext import (
+from ...ext import (
     DiscordIcons,
     ParseMode,
     component_button,
@@ -31,7 +31,7 @@ class Component:
     MENU_DIV_ID = 0
 
     @staticmethod
-    async def flow(guild: discord.Guild, *, component: discord.Component) -> str:
+    async def flow(guild: Optional[discord.Guild], *, component: discord.Component) -> str:
         if isinstance(component, discord.ActionRow):
             buttons = ""
             menus = ""

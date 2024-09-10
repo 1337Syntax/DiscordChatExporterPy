@@ -3,9 +3,9 @@ import discord
 import os
 from enum import Enum
 
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
-from chat_exporter.parse import ParseMarkdown, ParseMention
+from ..parse import ParseMarkdown, ParseMention
 
 dir_path = os.path.abspath(
     os.path.join(
@@ -24,7 +24,7 @@ class ParseMode(Enum):
     EMOJI = 6
 
 
-async def fill_out(guild: discord.Guild, base: str, replacements: List[Union[Tuple[str, str], Tuple[str, str, ParseMode]]], *, finalise: bool = False) -> str:
+async def fill_out(guild: Optional[discord.Guild], base: str, replacements: List[Union[Tuple[str, str], Tuple[str, str, ParseMode]]], *, finalise: bool = False) -> str:
     for r in replacements:
         if len(r) == 2:
             k, v = r

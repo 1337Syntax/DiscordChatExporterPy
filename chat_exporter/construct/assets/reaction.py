@@ -1,13 +1,15 @@
 import discord
 
-from chat_exporter.ext import ParseMode, convert_emoji, custom_emoji, emoji, fill_out
+from typing import Optional
+
+from ...ext import ParseMode, convert_emoji, custom_emoji, emoji, fill_out
 
 
 class Reaction:
     """The Reaction Converter"""
 
     @staticmethod
-    async def flow(guild: discord.Guild, *, reaction: discord.Reaction) -> str:
+    async def flow(guild: Optional[discord.Guild], *, reaction: discord.Reaction) -> str:
         if reaction.is_custom_emoji():
             assert isinstance(reaction.emoji, (discord.Emoji, discord.PartialEmoji))
             return await fill_out(

@@ -2,20 +2,20 @@
 <html lang="EN">
 
 <head>
-    <title>{{SERVER_NAME}}: #{{CHANNEL_NAME}}</title>
+    <title>{{TITLE}}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width" />
-    <meta name="title" content="{{SERVER_NAME}}: #{{CHANNEL_NAME}}">
-    <meta name="description" content="Transcript of Discord {{CHANNEL_TYPE}} #{{CHANNEL_NAME}} ({{CHANNEL_ID}}) from {{SERVER_NAME}} ({{GUILD_ID}}). This was Generated on {{DATE_TIME}} with {{MESSAGE_COUNT}} Messages.">
+    <meta name="title" content="{{TITLE}}">
+    <meta name="description" content="Transcript of Discord {{CONTEXT}}. This was Generated on {{DATE_TIME}} with {{MESSAGE_COUNT}} Messages.">
     <meta name="theme-color" content="#FFFFFF" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="{{SERVER_NAME}}: #{{CHANNEL_NAME}}" />
-    <meta property="og:description" content="Transcript of Discord {{CHANNEL_TYPE}} #{{CHANNEL_NAME}} ({{CHANNEL_ID}}) from {{SERVER_NAME}} ({{GUILD_ID}}). This was Generated on {{DATE_TIME}} with {{MESSAGE_COUNT}} Messages." />
+    <meta property="og:title" content="{{TITLE}}" />
+    <meta property="og:description" content="Transcript of Discord {{CONTEXT}}. This was Generated on {{DATE_TIME}} with {{MESSAGE_COUNT}} Messages." />
 
     <meta name="twitter:card" content="summary" />
-    <meta name='twitter:title' content="{{SERVER_NAME}}: #{{CHANNEL_NAME}}" />
-    <meta name='twitter:description' content="Transcript of Discord {{CHANNEL_TYPE}} #{{CHANNEL_NAME}} ({{CHANNEL_ID}}) from {{SERVER_NAME}} ({{GUILD_ID}}). This was Generated on {{DATE_TIME}} with {{MESSAGE_COUNT}} Messages." />
+    <meta name='twitter:title' content="{{TITLE}}" />
+    <meta name='twitter:description' content="Transcript of Discord {{CONTEXT}}. This was Generated on {{DATE_TIME}} with {{MESSAGE_COUNT}} Messages." />
 
     <style>
         @font-face {
@@ -1302,7 +1302,7 @@
         <div class="buffer"></div>
 
         <div class="info">
-            <span class="info__title">Welcome to #{{CHANNEL_NAME}}!</span>
+            <span class="info__title">{{CHANNEL_TITLE}}!</span>
             {{SUBJECT}}
         </div>
 

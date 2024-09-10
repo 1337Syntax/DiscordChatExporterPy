@@ -36,7 +36,7 @@ from grapheme import graphemes
 
 from typing import List
 
-from chat_exporter.ext import cache
+from ..ext import cache
 
 cdn_fmt = "https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/{codepoint}.png"
 

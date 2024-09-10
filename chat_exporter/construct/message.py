@@ -5,14 +5,8 @@ from datetime import timedelta
 
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from chat_exporter.construct import (
-    Attachment,
-    AttachmentHandler,
-    Component,
-    Embed,
-    Reaction,
-)
-from chat_exporter.ext import (
+from ..construct import Attachment, AttachmentHandler, Component, Embed, Reaction
+from ..ext import (
     DiscordIcons,
     ParseMode,
     app_tag,
@@ -65,7 +59,7 @@ class MessageConstruct:
         starter_message: Optional[discord.Message],
         previous_message: Optional[discord.Message],
         military_time: bool,
-        guild: discord.Guild,
+        guild: Optional[discord.Guild],
         meta_data: Dict[int, List[Any]],
         message_dict: Dict[int, discord.Message],
         attachment_handler: Optional[AttachmentHandler],
@@ -437,6 +431,9 @@ class MessageConstruct:
 
     @cache()
     async def _gather_member(self, author: discord.abc.User) -> Optional[discord.Member]:
+        if not self.guild:
+            return None
+
         member = self.guild.get_member(author.id)
         if member:
             return member
@@ -472,7 +469,7 @@ class MessageConstruct:
         return created_at_str, edited_at_str
 
 
-async def gather_messages(messages: List[discord.Message], guild: discord.Guild, military_time: bool, attachment_handler: Optional[AttachmentHandler]) -> Tuple[str, Dict[int, List[Any]]]:
+async def gather_messages(messages: List[discord.Message], guild: Optional[discord.Guild], military_time: bool, attachment_handler: Optional[AttachmentHandler]) -> Tuple[str, Dict[int, List[Any]]]:
     message_html: str = ""
     meta_data: Dict[int, List[Any]] = {}
     previous_message: Optional[discord.Message] = None
@@ -483,6 +480,7 @@ async def gather_messages(messages: List[discord.Message], guild: discord.Guild,
     if messages and isinstance(messages[0].channel, discord.Thread) and messages[0].reference:
         starter_message = messages[0].channel.starter_message
         if not starter_message:
+            assert guild is not None
             channel: Optional[discord.TextChannel] = messages[0].channel.parent or guild.get_channel(  # type: ignore
                 messages[0].channel.parent_id,
             )

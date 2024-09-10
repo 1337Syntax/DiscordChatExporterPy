@@ -2,7 +2,9 @@ import discord
 
 import html
 
-from chat_exporter.ext import (
+from typing import Optional
+
+from ...ext import (
     ParseMode,
     embed_author,
     embed_author_icon,
@@ -23,7 +25,7 @@ class Embed:
     """The Embed Converter"""
 
     @staticmethod
-    async def flow(guild: discord.Guild, *, embed: discord.Embed) -> str:
+    async def flow(guild: Optional[discord.Guild], *, embed: discord.Embed) -> str:
         if embed.colour:
             r, g, b = embed.colour.to_rgb()
         else:
@@ -93,7 +95,7 @@ class Embed:
         ) if embed.thumbnail and embed.thumbnail.url else ""
 
         if embed.timestamp:
-            timestamp = f'{html.escape("•")} <span data-timestamp="{embed.timestamp.isoformat()}""></span>'
+            timestamp = f'<span data-timestamp="{embed.timestamp.isoformat()}""></span>'
         else:
             timestamp = ""
 
@@ -101,6 +103,9 @@ class Embed:
             embed.footer.text,
         ) if embed.footer and embed.footer.text else ""
         footer_icon = embed.footer.icon_url if embed.footer and embed.footer.icon_url else None
+
+        if footer and timestamp:
+            footer = footer + f" {html.escape('•')}  "
         if footer or timestamp:
             if footer_icon:
                 footer = await fill_out(

@@ -6,7 +6,7 @@ import string
 
 from typing import Dict, List, Optional
 
-from chat_exporter.ext import convert_emoji
+from ..ext import convert_emoji
 
 
 class ParseMarkdown:

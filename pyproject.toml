@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "DiscordChatExporterPy"
+name = "chat_exporter"
 keywords = ["chat exporter", "discord chat exporter", "discord", "discordpy"]
 description = "A Python Package to Export Discord Chat Logs to HTML-Transcripts"
 readme = "README.md"
@@ -33,11 +33,6 @@ dynamic = ["version", "dependencies"]
 
 [project.urls]
 GitHub = "https://github.com/1337Syntax/DiscordChatExporterPy"
-
-[tool.setuptools]
-packages = [
-    "chat_exporter",
-]
 
 [tool.setuptools.dynamic]
 dependencies = { file = "requirements/_.txt" }

@@ -1,4 +1,4 @@
-from chat_exporter.chat_exporter import (
+from .chat_exporter import (
     AttachmentHandler,
     AttachmentToDiscordChannelHandler,
     AttachmentToLocalFileHostHandler,
@@ -9,4 +9,4 @@ from chat_exporter.chat_exporter import (
     raw_export,
 )
 
-__version__ = "2.9.0"
+__version__ = "2.9.1"
