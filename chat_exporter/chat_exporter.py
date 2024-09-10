@@ -3,7 +3,7 @@ import discord
 import datetime
 import io
 
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from .construct import (
     AttachmentHandler,
@@ -67,7 +67,7 @@ async def quick_export(
 
 
 async def export(
-    channel: Union[discord.TextChannel, discord.Thread],
+    channel: discord.abc.Messageable,
     limit: Optional[int] = None,
     bot: Optional[discord.Client] = None,
     military_time: bool = True,
@@ -80,7 +80,7 @@ async def export(
 
     Parameters
     ----------
-    channel: Union[:class:`discord.TextChannel` | :class:`discord.Thread`]
+    channel: :class:`discord.abc.Messageable`
         The Channel to Export
     limit: Optional[:class:`int`]
         The Limit of Messages to Capture
@@ -118,7 +118,7 @@ async def export(
 
 
 async def raw_export(
-    channel: Union[discord.TextChannel, discord.Thread],
+    channel: discord.abc.Messageable,
     messages: List[discord.Message],
     bot: Optional[discord.Client] = None,
     military_time: bool = False,
@@ -129,7 +129,7 @@ async def raw_export(
 
     Parameters
     ----------
-    channel: Union[:class:`discord.TextChannel` | :class:`discord.Thread`]
+    channel: discord.abc.Messageable
         The Channel that the Messages are From
     messages: List[:class:`discord.Message`]
         The Messages to Export
@@ -163,7 +163,7 @@ async def raw_export(
 
 
 async def quick_link(
-    channel: Union[discord.TextChannel, discord.Thread],
+    channel: discord.abc.Messageable,
     message: discord.Message,
 ) -> discord.Message:
     """
@@ -171,7 +171,7 @@ async def quick_link(
 
     Parameters
     ----------
-    channel: Union[:class:`discord.TextChannel` | :class:`discord.Thread`]
+    channel: :class:`discord.abc.Messageable`
         The Channel to Send the Link
     message: :class:`discord.Message`
         The Message to Get the Transcript From

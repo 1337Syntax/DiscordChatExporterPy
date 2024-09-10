@@ -262,15 +262,24 @@ class Transcript(TranscriptDAO):
                 )
             ]
 
-        if isinstance(self.channel, (discord.DMChannel, discord.GroupChannel)):
-            if (not self.channel.recipients) and (self.bot):
-                try:
-                    # type: ignore
-                    channel: discord.abc.Messageable = await self.bot.fetch_channel(self.channel.id)
-                except discord.HTTPException:
-                    pass
-                else:
-                    self.channel = channel
+        fetch = False
+        if isinstance(self.channel, discord.abc.PrivateChannel):
+            if isinstance(self.channel, discord.GroupChannel):
+                if not self.channel.recipients:
+                    fetch = True
+            elif isinstance(self.channel, discord.DMChannel):
+                if not self.channel.recipient:
+                    fetch = True
+
+        if (fetch) and (self.bot):
+            try:
+                channel: discord.abc.Messageable = await self.bot.fetch_channel(
+                    self.channel.id,  # type: ignore
+                )
+            except discord.HTTPException:
+                pass
+            else:
+                self.channel = channel
 
         try:
             return await super().build_transcript()
