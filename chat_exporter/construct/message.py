@@ -451,15 +451,20 @@ class MessageConstruct:
         return f"color: {user_colour};"
 
     async def _gather_user_icon(self, author: discord.abc.User) -> str:
+        url = ""
         member = await self._gather_member(author)
         if not member:
-            return ""
+            return url
 
-        if hasattr(member, "display_icon") and member.display_icon:
-            return f"<img class='chatlog__role-icon' src='{member.display_icon}' alt='Role Icon'>"
-        elif hasattr(member, "top_role") and member.top_role and member.top_role.icon:
-            return f"<img class='chatlog__role-icon' src='{member.top_role.icon}' alt='Role Icon'>"
-        return ""
+        if member.display_icon:
+            if isinstance(member.display_icon, str):
+                codepoints = "-".join([f"{ord(char):x}" for char in member.display_icon])
+                url = f"https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/{codepoints}.svg"
+                return f"<img class='chatlog__role-icon' src='{url}' alt='Role Icon'>"
+            else:
+                return f"<img class='chatlog__role-icon' src='{member.display_icon.url}' alt='Role Icon'>"
+
+        return url
 
     def set_time(self, message: Optional[discord.Message] = None) -> Tuple[str, str]:
         message = message if message else self.message
